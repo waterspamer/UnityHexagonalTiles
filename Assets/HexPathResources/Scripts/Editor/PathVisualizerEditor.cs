@@ -11,7 +11,7 @@ namespace HexPathResources.Scripts.Editor
         {
             base.OnInspectorGUI();
 
-            if (GUILayout.Button("ShowPath"))
+            if (GUILayout.Button("Fill Possible Hexes"))
             {
                 (target as PathVisualizer)?.FindPath();
             }

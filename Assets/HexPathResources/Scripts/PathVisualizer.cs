@@ -10,6 +10,8 @@ using UnityEngine.UI;
 
 namespace HexPathResources.Scripts
 {
+    [ExecuteInEditMode]
+    
     public class PathVisualizer : MonoBehaviour
     {
         [Range(0, 1)] public int controlType = 0;
@@ -42,14 +44,16 @@ namespace HexPathResources.Scripts
 
         public ScrollAndPinch scrollAndPinch;
 
-        public List<Vector3Int> possiblePlacedNewCoords;
+        public Dictionary<Vector3Int, List<HexUnit>> possiblePlacedNewCoordsByNeighbours;
+
+        public GameObject hexPrefab;
 
         public bool isSwipingCamera => scrollAndPinch.swipeActive;
 
-        [ExecuteInEditMode]
+        
         private void Awake()
         {
-            possiblePlacedNewCoords = new List<Vector3Int>();
+            possiblePlacedNewCoordsByNeighbours = new Dictionary<Vector3Int, List<HexUnit>>();
             Application.targetFrameRate = 60;
             a.SetCurrent();
         }
@@ -57,10 +61,28 @@ namespace HexPathResources.Scripts
 
         private void OnDrawGizmos()
         {
-            foreach (var item in possiblePlacedNewCoords)
+            if (possiblePlacedNewCoordsByNeighbours == null)
+                possiblePlacedNewCoordsByNeighbours = new Dictionary<Vector3Int, List<HexUnit>>();
+            else 
+                foreach (var item in possiblePlacedNewCoordsByNeighbours)
+                {
+                    //Handles.DrawSolidDisc(new Vector3(item.Key.x * 1.73f, 0, item.Key.z * 1.5f), Vector3.up, .4f);
+                }
+        }
+
+        public void AddAllPossibleHexUnits()
+        {
+            foreach (var item in possiblePlacedNewCoordsByNeighbours)
             {
-                //Handles.Button(item)
+                //AddNewHexUnit();
             }
+        }
+
+        public void AddNewHexUnit(HexUnit hexUnit)
+        {
+            var hU = Instantiate(hexPrefab).AddComponent<HexUnit>();
+            possiblePlacedNewCoordsByNeighbours.Remove(hU.coordinates);
+            units.Add(hexUnit);
         }
 
 
