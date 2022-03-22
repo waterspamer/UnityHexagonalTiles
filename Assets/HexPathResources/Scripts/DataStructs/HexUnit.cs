@@ -14,18 +14,7 @@ namespace HexPathResources.Scripts.DataStructs
     public class HexUnit : MonoBehaviour
     {
 
-        public HexUnit(Vector3Int matrixCoords, List<HexUnit> neighbours, UnityEngine.Vector3 worldPos, bool isObstacle)
-        {
-            this.coordinates = matrixCoords;
-            this.neighbours = neighbours;
-            this.transform.position = worldPos;
-            this.isObstacle = isObstacle;
-        }
-
-        public HexUnit(Vector3Int matrixCoords)
-        {
-            this.coordinates = matrixCoords;
-        }
+        
         
         public bool isObstacle = false;
 
@@ -83,7 +72,9 @@ namespace HexPathResources.Scripts.DataStructs
                     Handles.DrawSolidDisc(transform.position + (this.NeighbourGlobalCoordinateByDirection((Direction)i) - transform.position)/2f +new Vector3(0,.01f, 0), Vector3.up, .1f);
                     
                     //Handles.DrawSolidDisc(this.NeighbourGlobalCoordinateByDirection((Direction)i), Vector3.up, .4f);
-                    if (!pathVisualizer.possiblePlacedNewCoordsByNeighbours.ContainsKey(
+                    
+                    /*
+                    if (!pathVisualizer.possiblePlacedNewCoordsByNeighbours.Contains( 
                             this.coordinates.GetNeighbourMatrixCoordinateByDirection((Direction) i)))
                         pathVisualizer.possiblePlacedNewCoordsByNeighbours.Add(this.coordinates.GetNeighbourMatrixCoordinateByDirection((Direction)i), new List<HexUnit>(new []{this}));
                     {
@@ -95,7 +86,18 @@ namespace HexPathResources.Scripts.DataStructs
                                     hexNeighbours.Add(this);
                             }
                     }
-                        
+                    */
+                    var govno = pathVisualizer.possiblePlacedNewCoordsByNeighbours.FirstOrDefault(hUnit =>
+                        hUnit.matrixCoords == coordinates.GetNeighbourMatrixCoordinateByDirection((Direction) i));
+                    if (govno!= null)
+                    {
+                        if (!govno.neighbours.Contains(this))
+                            govno.neighbours.Add(this);
+                    }
+                    else
+                        pathVisualizer.possiblePlacedNewCoordsByNeighbours.Add(new GeneratedHexDataWrapper(
+                            coordinates.GetNeighbourMatrixCoordinateByDirection((Direction) i), new  []{this}.ToList(),
+                            this.NeighbourGlobalCoordinateByDirection((Direction) i), false));
                 }
             
                 

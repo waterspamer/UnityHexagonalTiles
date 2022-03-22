@@ -44,7 +44,7 @@ namespace HexPathResources.Scripts
 
         public ScrollAndPinch scrollAndPinch;
 
-        public Dictionary<Vector3Int, List<HexUnit>> possiblePlacedNewCoordsByNeighbours;
+        public List<GeneratedHexDataWrapper> possiblePlacedNewCoordsByNeighbours;
 
         public GameObject hexPrefab;
 
@@ -53,21 +53,22 @@ namespace HexPathResources.Scripts
         
         private void Awake()
         {
-            possiblePlacedNewCoordsByNeighbours = new Dictionary<Vector3Int, List<HexUnit>>();
+            possiblePlacedNewCoordsByNeighbours = new List<GeneratedHexDataWrapper>();
             Application.targetFrameRate = 60;
             a.SetCurrent();
         }
-
-
         private void OnDrawGizmos()
         {
             if (possiblePlacedNewCoordsByNeighbours == null)
-                possiblePlacedNewCoordsByNeighbours = new Dictionary<Vector3Int, List<HexUnit>>();
+                possiblePlacedNewCoordsByNeighbours = new List<GeneratedHexDataWrapper>();
             else 
                 foreach (var item in possiblePlacedNewCoordsByNeighbours)
                 {
-                    //Handles.DrawSolidDisc(new Vector3(item.Key.x * 1.73f, 0, item.Key.z * 1.5f), Vector3.up, .4f);
+                    Handles.DrawSolidDisc(item.worldPos, Vector3.up, .4f);
+                    
                 }
+            
+            //Debug.Log(possiblePlacedNewCoordsByNeighbours.Count);
         }
 
         public void AddAllPossibleHexUnits()
@@ -78,11 +79,15 @@ namespace HexPathResources.Scripts
             }
         }
 
-        public void AddNewHexUnit(HexUnit hexUnit)
+        public void AddNewHexUnit(GeneratedHexDataWrapper unit)
         {
-            var hU = Instantiate(hexPrefab).AddComponent<HexUnit>();
-            possiblePlacedNewCoordsByNeighbours.Remove(hU.coordinates);
-            units.Add(hexUnit);
+            possiblePlacedNewCoordsByNeighbours.Remove(unit);
+            var newUnit = Instantiate(hexPrefab, unit.worldPos, Quaternion.identity, this.transform);
+            var comp = newUnit.AddComponent<HexUnit>();
+            comp.coordinates = unit.matrixCoords;
+            comp.neighbours = unit.neighbours;
+            comp.isObstacle = unit.isObstacle;
+            units.Add(comp);
         }
 
 
