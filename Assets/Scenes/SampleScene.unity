@@ -131,6 +131,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 1339384530}
     m_Modifications:
     - target: {fileID: 993831629468140202, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
+      propertyPath: isObstacle
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 993831629468140202, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
       propertyPath: coordinates.x
       value: 0
       objectReference: {fileID: 0}
@@ -178,6 +182,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 2122702727}
+    - target: {fileID: 7613313860253541941, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 433584862496a744aa335d72b75d9f9b, type: 2}
     - target: {fileID: 8261590657388759008, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
       propertyPath: m_Name
       value: Hex (11)
@@ -242,7 +250,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 993831629468140202, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
       propertyPath: isObstacle
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 993831629468140202, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
       propertyPath: coordinates.x
@@ -291,7 +299,7 @@ PrefabInstance:
     - target: {fileID: 7613313860253541941, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 73e47560da39a7d48b82e189938eedec, type: 2}
+      objectReference: {fileID: 2100000, guid: 433584862496a744aa335d72b75d9f9b, type: 2}
     - target: {fileID: 8261590657388759008, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
       propertyPath: m_Name
       value: Hex (12)
@@ -659,6 +667,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 1339384530}
     m_Modifications:
     - target: {fileID: 993831629468140202, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
+      propertyPath: isObstacle
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 993831629468140202, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
       propertyPath: coordinates.x
       value: 0
       objectReference: {fileID: 0}
@@ -694,6 +706,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 2146350326}
+    - target: {fileID: 7613313860253541941, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 433584862496a744aa335d72b75d9f9b, type: 2}
     - target: {fileID: 8261590657388759008, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
       propertyPath: m_Name
       value: Hex (9)
@@ -2052,8 +2068,12 @@ PrefabInstance:
     m_TransformParent: {fileID: 1339384530}
     m_Modifications:
     - target: {fileID: 993831629468140202, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
+      propertyPath: isObstacle
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 993831629468140202, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
       propertyPath: coordinates.x
-      value: -1
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 993831629468140202, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
       propertyPath: coordinates.y
@@ -2061,7 +2081,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 993831629468140202, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
       propertyPath: coordinates.z
-      value: -3
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 993831629468140202, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
       propertyPath: pathVisualizer
@@ -2091,6 +2111,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 2024109695}
+    - target: {fileID: 7613313860253541941, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 433584862496a744aa335d72b75d9f9b, type: 2}
     - target: {fileID: 8261590657388759008, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
       propertyPath: m_Name
       value: Hex (19)
@@ -3202,7 +3226,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 993831629468140202, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
       propertyPath: coordinates.x
-      value: -1
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 993831629468140202, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
       propertyPath: coordinates.y
@@ -3210,7 +3234,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 993831629468140202, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
       propertyPath: coordinates.z
-      value: -1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 993831629468140202, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
       propertyPath: pathVisualizer
@@ -5661,11 +5685,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 993831629468140202, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
       propertyPath: isObstacle
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 993831629468140202, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
       propertyPath: coordinates.x
-      value: -1
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 993831629468140202, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
       propertyPath: coordinates.y
@@ -5673,7 +5697,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 993831629468140202, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
       propertyPath: coordinates.z
-      value: -2
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 993831629468140202, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
       propertyPath: pathVisualizer
@@ -5706,7 +5730,7 @@ PrefabInstance:
     - target: {fileID: 7613313860253541941, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 73e47560da39a7d48b82e189938eedec, type: 2}
+      objectReference: {fileID: 2100000, guid: 433584862496a744aa335d72b75d9f9b, type: 2}
     - target: {fileID: 8261590657388759008, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
       propertyPath: m_Name
       value: Hex (18)
@@ -5911,7 +5935,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 993831629468140202, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
       propertyPath: coordinates.x
-      value: -1
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 993831629468140202, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
       propertyPath: coordinates.y
@@ -5919,7 +5943,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 993831629468140202, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
       propertyPath: coordinates.z
-      value: -4
+      value: -3
       objectReference: {fileID: 0}
     - target: {fileID: 993831629468140202, guid: aff8fbe5cf9fb964f954a5ecc49a5007, type: 3}
       propertyPath: pathVisualizer

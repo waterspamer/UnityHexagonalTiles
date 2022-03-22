@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using static HexPathResources.Scripts.DataStructs.SingleMoveDirection;
 
 namespace HexPathResources.Scripts.DataStructs
 {
@@ -41,14 +44,41 @@ namespace HexPathResources.Scripts.DataStructs
         private void OnDrawGizmos()
         {
             GUIStyle style = new GUIStyle();
-            style.normal.textColor = Color.red; 
+            style.fontSize = 8;
+            style.normal.textColor = Color.cyan; 
             Handles.Label(transform.position, coordinates.ToString(), style);
-            
+            var dict = pathVisualizer.units.ToDictionary(keySelector: unit => unit.coordinates);
             for (int i =0; i < 6; i++ )
             {
-                //if (pathVisualizer.units.Contains())
-            }
+                if (dict.ContainsKey(coordinates.GetNeighbourMatrixCoordinateByDirection((Direction) i)))
+                {
+                    if (!isObstacle)
+                    {
+                        Handles.DrawLine(transform.position, transform.position + (this.NeighbourGlobalCoordinateByDirection((Direction)i) - transform.position)/2, 2f);
+                    
+                        //Handles.DrawSolidDisc(transform.position + (this.NeighbourGlobalCoordinateByDirection((Direction)i) - transform.position)/2f, Vector3.up, .1f);
+                    }
+                    else
+                    {
+                        Handles.color = Color.yellow;
+                        Handles.DrawLine(transform.position, transform.position + (this.NeighbourGlobalCoordinateByDirection((Direction)i) - transform.position)/2, 2f);
+                        //Handles.DrawSolidDisc(transform.position + (this.NeighbourGlobalCoordinateByDirection((Direction)i) - transform.position)/2f +new Vector3(0,.01f, 0), Vector3.up, .1f);
+                    }
+                }
+                else {
+                    Handles.color = Color.white;
+                    Handles.DrawLine(transform.position, transform.position + (this.NeighbourGlobalCoordinateByDirection((Direction)i) - transform.position)/2, 2f);
+                    Handles.DrawSolidDisc(transform.position + (this.NeighbourGlobalCoordinateByDirection((Direction)i) - transform.position)/2f +new Vector3(0,.01f, 0), Vector3.up, .1f);
+                    
+                    Handles.DrawSolidDisc(this.NeighbourGlobalCoordinateByDirection((Direction)i), Vector3.up, .4f);
+                    if (!pathVisualizer.possiblePlacedNewCoords.Contains(this.coordinates.GetNeighbourMatrixCoordinateByDirection((Direction)i)))
+                        pathVisualizer.possiblePlacedNewCoords.Add(this.coordinates.GetNeighbourMatrixCoordinateByDirection((Direction)i));
+                }
             
+                //Debug.Log(pathVisualizer.possiblePlacedNewCoords.Count);
+                
+            }
+               
 
         }
         #endif
@@ -65,6 +95,8 @@ namespace HexPathResources.Scripts.DataStructs
             GetComponent<Renderer>().material = space;
 
         }
+        
+        
 
         
         #if UNITY_EDITOR

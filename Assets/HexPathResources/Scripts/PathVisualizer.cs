@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using HexPathResources.Scripts.DataStructs;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -21,6 +22,7 @@ namespace HexPathResources.Scripts
         public LineRenderer lRend;
 
         public List<HexUnit> units;
+        
 
         public Text lengthText;
 
@@ -40,12 +42,25 @@ namespace HexPathResources.Scripts
 
         public ScrollAndPinch scrollAndPinch;
 
+        public List<Vector3Int> possiblePlacedNewCoords;
+
         public bool isSwipingCamera => scrollAndPinch.swipeActive;
 
+        [ExecuteInEditMode]
         private void Awake()
         {
+            possiblePlacedNewCoords = new List<Vector3Int>();
             Application.targetFrameRate = 60;
             a.SetCurrent();
+        }
+
+
+        private void OnDrawGizmos()
+        {
+            foreach (var item in possiblePlacedNewCoords)
+            {
+                //Handles.Button(item)
+            }
         }
 
 
