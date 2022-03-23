@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace HexPathResources.Scripts.DataStructs
 {
+    [System.Serializable]
     public class GeneratedHexDataWrapper
     {
         public Vector3Int matrixCoords;

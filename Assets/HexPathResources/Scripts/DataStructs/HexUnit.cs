@@ -11,6 +11,7 @@ using static HexPathResources.Scripts.DataStructs.SingleMoveDirection;
 
 namespace HexPathResources.Scripts.DataStructs
 {
+    [Serializable]
     public class HexUnit : MonoBehaviour
     {
 
@@ -44,10 +45,11 @@ namespace HexPathResources.Scripts.DataStructs
         #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            GUIStyle style = new GUIStyle();
-            style.fontSize = 8;
-            style.normal.textColor = Color.cyan; 
-            Handles.Label(transform.position, coordinates.ToString(), style);
+            if (pathVisualizer == null) return;
+            //GUIStyle style = new GUIStyle();
+            //style.fontSize = 12;
+            //style.normal.textColor = Color.cyan; 
+            //Handles.Label(transform.position, coordinates.ToString(), style);
             var dict = pathVisualizer.units.ToDictionary(keySelector: unit => unit.coordinates);
             for (int i =0; i < 6; i++ )
             {
@@ -56,14 +58,11 @@ namespace HexPathResources.Scripts.DataStructs
                     if (!isObstacle)
                     {
                         Handles.DrawLine(transform.position, transform.position + (this.NeighbourGlobalCoordinateByDirection((Direction)i) - transform.position)/2, 2f);
-                    
-                        //Handles.DrawSolidDisc(transform.position + (this.NeighbourGlobalCoordinateByDirection((Direction)i) - transform.position)/2f, Vector3.up, .1f);
                     }
                     else
                     {
                         Handles.color = Color.yellow;
                         Handles.DrawLine(transform.position, transform.position + (this.NeighbourGlobalCoordinateByDirection((Direction)i) - transform.position)/2, 2f);
-                        //Handles.DrawSolidDisc(transform.position + (this.NeighbourGlobalCoordinateByDirection((Direction)i) - transform.position)/2f +new Vector3(0,.01f, 0), Vector3.up, .1f);
                     }
                 }
                 else {
@@ -71,37 +70,23 @@ namespace HexPathResources.Scripts.DataStructs
                     Handles.DrawLine(transform.position, transform.position + (this.NeighbourGlobalCoordinateByDirection((Direction)i) - transform.position)/2, 2f);
                     Handles.DrawSolidDisc(transform.position + (this.NeighbourGlobalCoordinateByDirection((Direction)i) - transform.position)/2f +new Vector3(0,.01f, 0), Vector3.up, .1f);
                     
-                    //Handles.DrawSolidDisc(this.NeighbourGlobalCoordinateByDirection((Direction)i), Vector3.up, .4f);
-                    
-                    /*
-                    if (!pathVisualizer.possiblePlacedNewCoordsByNeighbours.Contains( 
-                            this.coordinates.GetNeighbourMatrixCoordinateByDirection((Direction) i)))
-                        pathVisualizer.possiblePlacedNewCoordsByNeighbours.Add(this.coordinates.GetNeighbourMatrixCoordinateByDirection((Direction)i), new List<HexUnit>(new []{this}));
-                    {
-                        if (pathVisualizer.possiblePlacedNewCoordsByNeighbours.TryGetValue(
-                                coordinates.GetNeighbourMatrixCoordinateByDirection((Direction) i),
-                                out List<HexUnit> hexNeighbours))
-                            {
-                                if (!hexNeighbours.Contains(this))
-                                    hexNeighbours.Add(this);
-                            }
-                    }
-                    */
                     var govno = pathVisualizer.possiblePlacedNewCoordsByNeighbours.FirstOrDefault(hUnit =>
                         hUnit.matrixCoords == coordinates.GetNeighbourMatrixCoordinateByDirection((Direction) i));
                     if (govno!= null)
                     {
                         if (!govno.neighbours.Contains(this))
                             govno.neighbours.Add(this);
+
+                        foreach (var item in govno.neighbours)
+                        {
+                            Gizmos.DrawLine(govno.worldPos, item.transform.position);
+                        }
                     }
                     else
                         pathVisualizer.possiblePlacedNewCoordsByNeighbours.Add(new GeneratedHexDataWrapper(
                             coordinates.GetNeighbourMatrixCoordinateByDirection((Direction) i), new  []{this}.ToList(),
                             this.NeighbourGlobalCoordinateByDirection((Direction) i), false));
                 }
-            
-                
-                
             }
                
 
@@ -120,11 +105,10 @@ namespace HexPathResources.Scripts.DataStructs
             GetComponent<Renderer>().material = space;
 
         }
-        
-        
 
-        
-        #if UNITY_EDITOR
+       
+
+#if UNITY_EDITOR
         private void OnValidate()
         {
             GetComponent<Renderer>().material = isObstacle ? obstacle : space;
@@ -159,12 +143,6 @@ namespace HexPathResources.Scripts.DataStructs
                 pathVisualizer.b = this;
                 pathVisualizer.SetDecisionMode();
                 _isSelected = true;
-
-                /*
-                Debug.Log("FindPath");
-                
-                pathVisualizer.FindPath();
-                pathVisualizer.Move();*/
             }
             
             else if (!isObstacle && !pathVisualizer.movingFlag && !IsPointerOverUIObject() &&
@@ -173,15 +151,15 @@ namespace HexPathResources.Scripts.DataStructs
                 pathVisualizer.onManualDoubleClickEvent?.Invoke();
                 _isSelected = false;
             }
-            
         }
         #endif
 
+        /*
         private void OnMouseEnter()
         {
             if (!isObstacle&& !IsPointerOverUIObject() )
                 GetComponent<Renderer>().material.color = Color.yellow;
-        }
+        }*/
         
         #if UNITY_EDITOR
         private void OnMouseExit()

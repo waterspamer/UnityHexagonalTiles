@@ -4,13 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using HexPathResources.Scripts.DataStructs;
 using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace HexPathResources.Scripts
 {
-    [ExecuteInEditMode]
+    [ExecuteInEditMode][System.Serializable]
     
     public class PathVisualizer : MonoBehaviour
     {
@@ -22,8 +24,10 @@ namespace HexPathResources.Scripts
         public GameObject aimObject;
 
         public LineRenderer lRend;
+        
+        public List<HexUnit> m_Tst;
 
-        public List<HexUnit> units;
+        [SerializeField] public List<HexUnit> units;
         
 
         public Text lengthText;
@@ -49,6 +53,7 @@ namespace HexPathResources.Scripts
         public GameObject hexPrefab;
 
         public bool isSwipingCamera => scrollAndPinch.swipeActive;
+        
 
         
         private void Awake()
@@ -59,35 +64,42 @@ namespace HexPathResources.Scripts
         }
         private void OnDrawGizmos()
         {
+            int i = 0;
             if (possiblePlacedNewCoordsByNeighbours == null)
                 possiblePlacedNewCoordsByNeighbours = new List<GeneratedHexDataWrapper>();
             else 
                 foreach (var item in possiblePlacedNewCoordsByNeighbours)
                 {
                     Handles.DrawSolidDisc(item.worldPos, Vector3.up, .4f);
-                    
+                    Handles.Label(item.worldPos, i.ToString());
+                    i++;
                 }
             
             //Debug.Log(possiblePlacedNewCoordsByNeighbours.Count);
         }
-
-        public void AddAllPossibleHexUnits()
-        {
-            foreach (var item in possiblePlacedNewCoordsByNeighbours)
-            {
-                //AddNewHexUnit();
-            }
-        }
-
+        //[SerializeField]
+        
+        public bool locker = false;
+        
         public void AddNewHexUnit(GeneratedHexDataWrapper unit)
         {
-            possiblePlacedNewCoordsByNeighbours.Remove(unit);
+           //EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+            //locker = true;
+            //EditorUtility.SetDirty(this);
             var newUnit = Instantiate(hexPrefab, unit.worldPos, Quaternion.identity, this.transform);
-            var comp = newUnit.AddComponent<HexUnit>();
+            var comp = newUnit.GetComponent<HexUnit>();
             comp.coordinates = unit.matrixCoords;
             comp.neighbours = unit.neighbours;
             comp.isObstacle = unit.isObstacle;
+            comp.pathVisualizer = this;
+            possiblePlacedNewCoordsByNeighbours.Remove(unit);
+            foreach (var item in unit.neighbours)
+            {
+                item.neighbours.Add(comp);
+            }
+            //Undo.RecordObject(comp);
             units.Add(comp);
+            //locker = false;
         }
 
 
@@ -98,6 +110,8 @@ namespace HexPathResources.Scripts
 
         public IEnumerator MoveSet(List<HexUnit> hexUnits)
         {
+            
+            Debug.Log(hexUnits.Count);
             movingFlag = true;
             a.SetEmpty();
             player.targetUnit = hexUnits[1];
@@ -126,7 +140,6 @@ namespace HexPathResources.Scripts
 
         public void Move()
         {
-            
             
             StartCoroutine(MoveSet(FindPath(a, b)));
         }
@@ -177,7 +190,8 @@ namespace HexPathResources.Scripts
 
         public  List<HexUnit> FindPath(HexUnit startPoint, HexUnit endPoint)
     {
-        List<HexUnit> openPathTiles = new List<HexUnit>();
+
+        List<HexUnit> openPathTiles = new List<HexUnit>();    
         List<HexUnit> closedPathTiles = new List<HexUnit>();
         
         HexUnit currentTile = startPoint;
