@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.XR;
 using static HexPathResources.Scripts.DataStructs.SingleMoveDirection;
 
 namespace HexPathResources.Scripts.DataStructs
@@ -46,10 +47,9 @@ namespace HexPathResources.Scripts.DataStructs
         private void OnDrawGizmos()
         {
             if (pathVisualizer == null) return;
-            //GUIStyle style = new GUIStyle();
-            //style.fontSize = 12;
-            //style.normal.textColor = Color.cyan; 
-            //Handles.Label(transform.position, coordinates.ToString(), style);
+
+            Handles.color = new Color(6 - (float) neighbours.Count / 6f, (float) neighbours.Count / 6f, 0f);
+            Handles.DrawSolidDisc(transform.position, Vector3.up, .4f);
             var dict = pathVisualizer.units.ToDictionary(keySelector: unit => unit.coordinates);
             for (int i =0; i < 6; i++ )
             {

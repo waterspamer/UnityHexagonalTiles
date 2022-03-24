@@ -24,7 +24,7 @@ namespace HexPathResources.Scripts.Editor
 
         void OnSceneGUI( )
         {
-            
+            if (!(target as PathVisualizer).editMode) return;
             serializedObject.Update();
             EditorGUI.BeginChangeCheck();
             var pTarget = target as PathVisualizer;
@@ -53,9 +53,8 @@ namespace HexPathResources.Scripts.Editor
                     (target as PathVisualizer).possiblePlacedNewCoordsByNeighbours.Remove(item);
                     foreach (var nb in item.neighbours)
                     {
-                        Undo.RecordObject(nb, "Adding neighbours to existing hexes");
-                        
                         nb.neighbours.Add(comp);
+                        Undo.RecordObject(nb, "Adding neighbours to existing hexes");
                         PrefabUtility.RecordPrefabInstancePropertyModifications(nb);
                     }
             
@@ -63,41 +62,11 @@ namespace HexPathResources.Scripts.Editor
                     Debug.Log(list.Count);
                     pTarget.units = list;
                     return;
-                    /*
-                    var property = serializedObject.FindProperty("units");
-                    //property.GetArrayElementAtIndex(20);
-                    property.InsertArrayElementAtIndex(property.arraySize -1);
-                    
-                    Debug.Log(property.GetArrayElementAtIndex(property.arraySize - 1).propertyType);
-                    Debug.Log (property.arraySize);
-                    Debug.Log(item.matrixCoords);
-                    pTarget.AddNewHexUnit(item);
-                    serializedObject.Update();
-                     */
                 }
             }
             //Debug.Log(serializedObject.hasModifiedProperties);
             EditorUtility.SetDirty(pTarget);
             serializedObject.ApplyModifiedProperties();
-        }
-        
-        
-        public void AddNewHexUnit(GeneratedHexDataWrapper unit)
-        {
-            var newUnit = Instantiate((target as PathVisualizer).hexPrefab, unit.worldPos, Quaternion.identity, (target as PathVisualizer).transform);
-            var comp = newUnit.GetComponent<HexUnit>();
-            comp.coordinates = unit.matrixCoords;
-            comp.neighbours = unit.neighbours;
-            comp.isObstacle = unit.isObstacle;
-            comp.pathVisualizer = (target as PathVisualizer);
-            (target as PathVisualizer).possiblePlacedNewCoordsByNeighbours.Remove(unit);
-            foreach (var item in unit.neighbours)
-            {
-                item.neighbours.Add(comp);
-            }
-            
-            (target as PathVisualizer).units.Add(comp);
-            //locker = false;
         }
     }
 }

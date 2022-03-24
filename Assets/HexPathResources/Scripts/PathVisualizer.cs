@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using HexPathResources.Scripts.DataStructs;
 using UnityEditor;
-using UnityEditor.SceneManagement;
-using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -17,6 +15,8 @@ namespace HexPathResources.Scripts
     public class PathVisualizer : MonoBehaviour
     {
         [Range(0, 1)] public int controlType = 0;
+
+        public bool editMode = true;
 
         public HexUnit a;
         public HexUnit b;
@@ -62,6 +62,8 @@ namespace HexPathResources.Scripts
             Application.targetFrameRate = 60;
             a.SetCurrent();
         }
+        
+        #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             int i = 0;
@@ -78,7 +80,7 @@ namespace HexPathResources.Scripts
             //Debug.Log(possiblePlacedNewCoordsByNeighbours.Count);
         }
         //[SerializeField]
-        
+        #endif
         public bool locker = false;
         
         public void AddNewHexUnit(GeneratedHexDataWrapper unit)
