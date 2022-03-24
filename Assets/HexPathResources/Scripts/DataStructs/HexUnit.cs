@@ -17,6 +17,7 @@ namespace HexPathResources.Scripts.DataStructs
     {
 
         public UnityEvent connectedEvent;
+        public UnityEvent onSelectionInfo;
         
         public bool isObstacle = false;
 
@@ -140,9 +141,11 @@ namespace HexPathResources.Scripts.DataStructs
         {
             
             //_tapCount++;
+            
             if (!isObstacle && !pathVisualizer.movingFlag && !IsPointerOverUIObject() && !pathVisualizer.isSwipingCamera)
             {
-                pathVisualizer.SetAimToPosition(this);
+                if (pathVisualizer.currentSelectedUnit != this)
+                    pathVisualizer.SetAimToPosition(this);
                 pathVisualizer.b = this;
                 pathVisualizer.SetDecisionMode();
                 _isSelected = true;
@@ -151,6 +154,7 @@ namespace HexPathResources.Scripts.DataStructs
             if (!isObstacle && !pathVisualizer.movingFlag && !IsPointerOverUIObject() &&
                      !pathVisualizer.isSwipingCamera && pathVisualizer.currentSelectedUnit == this)
             {
+                
                 pathVisualizer.onManualDoubleClickEvent?.Invoke();
                 _isSelected = false;
                 return;
@@ -159,7 +163,7 @@ namespace HexPathResources.Scripts.DataStructs
             pathVisualizer.currentSelectedUnit = this;
         }
         #endif
-
+        public bool eventHappened;
         /*
         private void OnMouseEnter()
         {
@@ -176,29 +180,25 @@ namespace HexPathResources.Scripts.DataStructs
         }
         #endif
 
-        #if UNITY_ANDROID || UNITY_IOS
+        #if (UNITY_ANDROID || UNITY_IOS)&& !UNITY_EDITOR
         private void OnMouseUp()
         {
             if (pathVisualizer.movingFlag) return;
             if (!isObstacle && !pathVisualizer.movingFlag && !IsPointerOverUIObject() && pathVisualizer.isSwipingCamera)
             {
+
                 pathVisualizer.SetAimToPosition(this);
                 pathVisualizer.b = this;
                 pathVisualizer.SetDecisionMode();
                 _isSelected = true;
-                /*
-                Debug.Log("FindPath");
-                
-                pathVisualizer.FindPath();
-                pathVisualizer.Move();*/
             }
             
             if (!isObstacle && !pathVisualizer.movingFlag && !IsPointerOverUIObject() &&
                      pathVisualizer.isSwipingCamera && pathVisualizer.currentSelectedUnit == this)
             {
+                
                 pathVisualizer.onManualDoubleClickEvent?.Invoke();
                 _isSelected = false;
-                pathVisualizer.currentSelectedUnit = null;
                 return;
             }
             pathVisualizer.currentSelectedUnit = this;

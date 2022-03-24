@@ -196,6 +196,9 @@ MonoBehaviour:
   connectedEvent:
     m_PersistentCalls:
       m_Calls: []
+  onSelectionInfo:
+    m_PersistentCalls:
+      m_Calls: []
   isObstacle: 0
   space: {fileID: 2100000, guid: 433584862496a744aa335d72b75d9f9b, type: 2}
   obstacle: {fileID: 2100000, guid: 73e47560da39a7d48b82e189938eedec, type: 2}
@@ -209,6 +212,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   neighbours: []
+  eventHappened: 0
 --- !u!64 &3336182433083611266
 MeshCollider:
   m_ObjectHideFlags: 0

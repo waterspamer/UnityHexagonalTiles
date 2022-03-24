@@ -98,9 +98,6 @@ namespace HexPathResources.Scripts
         
         public void AddNewHexUnit(GeneratedHexDataWrapper unit)
         {
-           //EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
-            //locker = true;
-            //EditorUtility.SetDirty(this);
             var newUnit = Instantiate(hexPrefab, unit.worldPos, Quaternion.identity, this.transform);
             var comp = newUnit.GetComponent<HexUnit>();
             comp.coordinates = unit.matrixCoords;
@@ -140,7 +137,7 @@ namespace HexPathResources.Scripts
         
         public IEnumerator MoveSet(List<HexUnit> hexUnits)
         {
-            
+            b.onSelectionInfo.RemoveAllListeners();
             Debug.Log(hexUnits.Count);
             movingFlag = true;
             a.SetEmpty();
@@ -163,11 +160,13 @@ namespace HexPathResources.Scripts
             a = hexUnits.Last();
             onStopMoveEvent?.Invoke();
             movingFlag = false;
-            a.connectedEvent?.Invoke();
+            if (!a.eventHappened)
+                a.connectedEvent?.Invoke();
+            a.eventHappened = true;
         }
 
         
-
+        
 
         public void Move()
         {
@@ -178,7 +177,12 @@ namespace HexPathResources.Scripts
         public void SetAimToPosition(HexUnit unit)
         {
             b = unit;
-            
+            if (b.connectedEvent.GetPersistentEventCount() != 0 && !movingFlag && !b.eventHappened)
+            {
+                Debug.Log(b.eventHappened);
+                b.onSelectionInfo?.Invoke();
+                Debug.Log("Invoked");
+            }
             aimObject.GetComponent<AimScript>().targetPos = unit.transform.position + new Vector3(0, .168f, 0);
             var path = FindPath(a, b);
             lengthText.text = (path.Count - 1).ToString();
@@ -189,16 +193,18 @@ namespace HexPathResources.Scripts
             {
                 unitObj.SetPathNeeded(path.Contains(unitObj));
             }
+            
         }
-        
 
-        public void FindPath()
+        public void ResetAim()
         {
-            
-            
-
-            //StartCoroutine(Visualize(path));
-
+            aimObject.GetComponent<AimScript>().targetPos = a.transform.position +new Vector3(0, .168f, 0);
+            lRend.positionCount = 0;
+            foreach (var unitObj in units)
+            {
+                
+                unitObj.SetPathNeeded(false);
+            }
         }
 
 
