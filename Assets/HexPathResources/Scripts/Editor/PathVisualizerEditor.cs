@@ -24,7 +24,7 @@ namespace HexPathResources.Scripts.Editor
 
         void OnSceneGUI( )
         {
-            if (!(target as PathVisualizer).editMode) return;
+            if (!(target as PathVisualizer).editMode) {return;}
             serializedObject.Update();
             EditorGUI.BeginChangeCheck();
             var pTarget = target as PathVisualizer;

@@ -16,7 +16,7 @@ namespace HexPathResources.Scripts.DataStructs
     public class HexUnit : MonoBehaviour
     {
 
-        
+        public UnityEvent connectedEvent;
         
         public bool isObstacle = false;
 
@@ -48,7 +48,8 @@ namespace HexPathResources.Scripts.DataStructs
         {
             if (pathVisualizer == null || !pathVisualizer.editMode) return;
 
-            Handles.color = new Color(6 - (float) neighbours.Count / 6f, (float) neighbours.Count / 6f, 0f);
+            
+            Handles.color = new Color( Mathf.Pow(6 - (float) neighbours.Count / 6f, 2f), (float) neighbours.Count / 6f, 0f);
             Handles.DrawSolidDisc(transform.position, Vector3.up, .4f);
             var dict = pathVisualizer.units.ToDictionary(keySelector: unit => unit.coordinates);
             for (int i =0; i < 6; i++ )
@@ -132,25 +133,30 @@ namespace HexPathResources.Scripts.DataStructs
             return results.Count > 0;
         }
 
+        private int _tapCount;
         
         #if UNITY_EDITOR
         private void OnMouseDown()
         {
-            if (!isObstacle && !pathVisualizer.movingFlag && !IsPointerOverUIObject() && !pathVisualizer.isSwipingCamera && !_isSelected)
+            
+            //_tapCount++;
+            if (!isObstacle && !pathVisualizer.movingFlag && !IsPointerOverUIObject() && !pathVisualizer.isSwipingCamera)
             {
-                if (!isObstacle && !pathVisualizer.movingFlag)
-                    pathVisualizer.SetAimToPosition(this);
+                pathVisualizer.SetAimToPosition(this);
                 pathVisualizer.b = this;
                 pathVisualizer.SetDecisionMode();
                 _isSelected = true;
             }
             
-            else if (!isObstacle && !pathVisualizer.movingFlag && !IsPointerOverUIObject() &&
-                     !pathVisualizer.isSwipingCamera && _isSelected)
+            if (!isObstacle && !pathVisualizer.movingFlag && !IsPointerOverUIObject() &&
+                     !pathVisualizer.isSwipingCamera && pathVisualizer.currentSelectedUnit == this)
             {
                 pathVisualizer.onManualDoubleClickEvent?.Invoke();
                 _isSelected = false;
+                return;
             }
+            
+            pathVisualizer.currentSelectedUnit = this;
         }
         #endif
 
@@ -173,13 +179,10 @@ namespace HexPathResources.Scripts.DataStructs
         #if UNITY_ANDROID || UNITY_IOS
         private void OnMouseUp()
         {
-            if (!isObstacle && !pathVisualizer.isSwipingCamera)
-                GetComponent<Renderer>().material.color = Color.white;
-            
-            if (!isObstacle && !pathVisualizer.movingFlag && !IsPointerOverUIObject() && pathVisualizer.isSwipingCamera && !_isSelected)
+            if (pathVisualizer.movingFlag) return;
+            if (!isObstacle && !pathVisualizer.movingFlag && !IsPointerOverUIObject() && pathVisualizer.isSwipingCamera)
             {
-                if (!isObstacle && !pathVisualizer.movingFlag)
-                    pathVisualizer.SetAimToPosition(this);
+                pathVisualizer.SetAimToPosition(this);
                 pathVisualizer.b = this;
                 pathVisualizer.SetDecisionMode();
                 _isSelected = true;
@@ -190,12 +193,15 @@ namespace HexPathResources.Scripts.DataStructs
                 pathVisualizer.Move();*/
             }
             
-            else if (!isObstacle && !pathVisualizer.movingFlag && !IsPointerOverUIObject() &&
-                     pathVisualizer.isSwipingCamera && _isSelected)
+            if (!isObstacle && !pathVisualizer.movingFlag && !IsPointerOverUIObject() &&
+                     pathVisualizer.isSwipingCamera && pathVisualizer.currentSelectedUnit == this)
             {
                 pathVisualizer.onManualDoubleClickEvent?.Invoke();
                 _isSelected = false;
+                pathVisualizer.currentSelectedUnit = null;
+                return;
             }
+            pathVisualizer.currentSelectedUnit = this;
         }
         #endif
 

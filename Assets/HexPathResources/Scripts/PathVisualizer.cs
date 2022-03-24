@@ -52,6 +52,8 @@ namespace HexPathResources.Scripts
 
         public GameObject hexPrefab;
 
+        [HideInInspector] public HexUnit currentSelectedUnit;
+
         public bool isSwipingCamera => scrollAndPinch.swipeActive;
         
 
@@ -62,10 +64,21 @@ namespace HexPathResources.Scripts
             Application.targetFrameRate = 60;
             a.SetCurrent();
         }
-        
-        #if UNITY_EDITOR
+
+        private void Start()
+        {
+            //StartCoroutine(TestFindAllPaths());
+        }
+
+        private void OnApplicationQuit()
+        {
+            StopAllCoroutines();
+        }
+
+#if UNITY_EDITOR
         private void OnDrawGizmos()
         {
+            if (!editMode) return;
             int i = 0;
             if (possiblePlacedNewCoordsByNeighbours == null)
                 possiblePlacedNewCoordsByNeighbours = new List<GeneratedHexDataWrapper>();
@@ -110,6 +123,21 @@ namespace HexPathResources.Scripts
             onChooseEvent?.Invoke();
         }
 
+        IEnumerator TestFindAllPaths()
+        {
+            foreach (var hex in units)
+            {
+                if (!hex.isObstacle)
+                {
+                    SetAimToPosition(hex);
+                    if (FindPath(a, hex).Count == -1)
+                        Debug.Log("fault");
+                }
+                    
+                yield return new WaitForSeconds(.016f);
+            }
+        }
+        
         public IEnumerator MoveSet(List<HexUnit> hexUnits)
         {
             
@@ -135,6 +163,7 @@ namespace HexPathResources.Scripts
             a = hexUnits.Last();
             onStopMoveEvent?.Invoke();
             movingFlag = false;
+            a.connectedEvent?.Invoke();
         }
 
         
@@ -218,9 +247,10 @@ namespace HexPathResources.Scripts
             }
             foreach (HexUnit adjacentTile in currentTile.neighbours)
             {
-                if (adjacentTile.isObstacle)
+                if (adjacentTile.isObstacle || adjacentTile.connectedEvent.GetPersistentEventCount() != 0) //Second condition if hex has any "not null" interactions 
                 {
-                    continue;
+                    if (adjacentTile != endPoint) 
+                        continue;
                 }
                 if (closedPathTiles.Contains(adjacentTile))
                 {
