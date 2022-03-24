@@ -46,7 +46,7 @@ namespace HexPathResources.Scripts.DataStructs
         #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            if (pathVisualizer == null) return;
+            if (pathVisualizer == null || !pathVisualizer.editMode) return;
 
             Handles.color = new Color(6 - (float) neighbours.Count / 6f, (float) neighbours.Count / 6f, 0f);
             Handles.DrawSolidDisc(transform.position, Vector3.up, .4f);
