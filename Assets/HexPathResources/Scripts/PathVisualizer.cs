@@ -255,7 +255,7 @@ namespace HexPathResources.Scripts
             {
                 if (adjacentTile.isObstacle || adjacentTile.connectedEvent.GetPersistentEventCount() != 0) //Second condition if hex has any "not null" interactions 
                 {
-                    if (adjacentTile != endPoint) 
+                    if (adjacentTile != endPoint && !adjacentTile.eventHappened) 
                         continue;
                 }
                 if (closedPathTiles.Contains(adjacentTile))

@@ -186,8 +186,8 @@ namespace HexPathResources.Scripts.DataStructs
             if (pathVisualizer.movingFlag) return;
             if (!isObstacle && !pathVisualizer.movingFlag && !IsPointerOverUIObject() && pathVisualizer.isSwipingCamera)
             {
-
-                pathVisualizer.SetAimToPosition(this);
+                if (pathVisualizer.currentSelectedUnit != this)
+                    pathVisualizer.SetAimToPosition(this);
                 pathVisualizer.b = this;
                 pathVisualizer.SetDecisionMode();
                 _isSelected = true;
