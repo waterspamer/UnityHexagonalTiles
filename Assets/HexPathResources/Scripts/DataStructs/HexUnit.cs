@@ -51,7 +51,7 @@ namespace HexPathResources.Scripts.DataStructs
             //Gizmos.color = Color.red;
             //if (isObstacle) Gizmos.DrawSphere(transform.position, 1f);
             //f (connectedEvent.GetPersistentEventCount() != 0) Handles.DrawSolidDisc(transform.position, Vector3.up, .4f);
-            //if (connectedEvent.GetPersistentEventCount() >0 && connectedEvent.GetPersistentEventCount() != 3) Gizmos.DrawCube(transform.position, Vector3.one);
+            if (connectedEvent.GetPersistentEventCount() == 3 && connectedEvent.GetPersistentTarget(2) == null) Gizmos.DrawCube(transform.position, Vector3.one);
             //Handles.Label(transform.position, coordinates.ToString());
             if (pathVisualizer == null || !pathVisualizer.editMode) return;
 
