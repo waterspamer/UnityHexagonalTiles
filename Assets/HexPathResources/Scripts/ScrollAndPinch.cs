@@ -15,6 +15,11 @@ namespace HexPathResources.Scripts
     protected Plane Plane;
 	public bool swipeActive;
 
+
+    public CameraController cameraController;
+
+    public PathVisualizer pathVisualizer;
+
     private void Awake()
     {
         if (Camera == null)
@@ -25,7 +30,7 @@ namespace HexPathResources.Scripts
 
     private void Update()
     {
-
+        if (cameraController.cameraControllingMode == CameraController.CameraControllingMode.Off || (cameraController.cameraControllingMode == CameraController.CameraControllingMode.FreeFollow && pathVisualizer.movingFlag) ) return;
         //Update Plane
         if (Input.touchCount >= 1)
             Plane.SetNormalAndPosition(transform.up, transform.position);

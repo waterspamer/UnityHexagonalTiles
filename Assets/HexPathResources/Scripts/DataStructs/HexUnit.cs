@@ -47,6 +47,12 @@ namespace HexPathResources.Scripts.DataStructs
         #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
+            
+            //Gizmos.color = Color.red;
+            //if (isObstacle) Gizmos.DrawSphere(transform.position, 1f);
+            //f (connectedEvent.GetPersistentEventCount() != 0) Handles.DrawSolidDisc(transform.position, Vector3.up, .4f);
+            //if (connectedEvent.GetPersistentEventCount() >0 && connectedEvent.GetPersistentEventCount() != 3) Gizmos.DrawCube(transform.position, Vector3.one);
+            //Handles.Label(transform.position, coordinates.ToString());
             if (pathVisualizer == null || !pathVisualizer.editMode) return;
 
             
@@ -141,10 +147,10 @@ namespace HexPathResources.Scripts.DataStructs
         {
             
             //_tapCount++;
-            
+            if (this == pathVisualizer.a) return;
             if (!isObstacle && !pathVisualizer.movingFlag && !IsPointerOverUIObject() && !pathVisualizer.isSwipingCamera)
             {
-                if (pathVisualizer.currentSelectedUnit != this)
+                if (pathVisualizer.currentSelectedUnit != this )
                     pathVisualizer.SetAimToPosition(this);
                 pathVisualizer.b = this;
                 pathVisualizer.SetDecisionMode();

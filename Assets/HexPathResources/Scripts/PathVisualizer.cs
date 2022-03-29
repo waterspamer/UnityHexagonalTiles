@@ -52,6 +52,11 @@ namespace HexPathResources.Scripts
 
         public GameObject hexPrefab;
 
+        public GameObject highlight1;
+        
+        public GameObject highlight2;
+
+
         [HideInInspector] public HexUnit currentSelectedUnit;
 
         public bool isSwipingCamera => scrollAndPinch.swipeActive;
@@ -163,6 +168,8 @@ namespace HexPathResources.Scripts
             if (!a.eventHappened)
                 a.connectedEvent?.Invoke();
             a.eventHappened = true;
+            a.SetPathNeeded(false);
+            highlight2.GetComponent<Animator>().Play("HighlightDisappear");
         }
 
         
@@ -170,13 +177,21 @@ namespace HexPathResources.Scripts
 
         public void Move()
         {
-            
-            StartCoroutine(MoveSet(FindPath(a, b)));
+            var path = FindPath(a, b);
+            if (path.Count == 0) {ResetAim();
+                return;
+            }
+            StartCoroutine(MoveSet(path));
         }
         
         public void SetAimToPosition(HexUnit unit)
         {
+            highlight1.transform.position = b.transform.position+ new Vector3(0, .12f, 0);
+            highlight1.GetComponent<Animator>().Play("HighlightDisappear");
             b = unit;
+
+            highlight2.transform.position = unit.transform.position + new Vector3(0, .12f, 0);
+            highlight2.GetComponent<Animator>().Play("HighlightAppear");
             if (b.connectedEvent.GetPersistentEventCount() != 0 && !movingFlag && !b.eventHappened)
             {
                 Debug.Log(b.eventHappened);
@@ -187,7 +202,7 @@ namespace HexPathResources.Scripts
             var path = FindPath(a, b);
             lengthText.text = (path.Count - 1).ToString();
             lRend.positionCount = path.Count;
-            lRend.SetPositions(path.Select((x => x.transform.position  + new Vector3(0, .06f, 0))).Reverse().ToArray());
+            lRend.SetPositions(path.Select((x => x.transform.position  + new Vector3(0, .1f, 0))).Reverse().ToArray());
             
             foreach (var unitObj in units)
             {
@@ -205,6 +220,8 @@ namespace HexPathResources.Scripts
                 
                 unitObj.SetPathNeeded(false);
             }
+            
+            highlight2.GetComponent<Animator>().Play("HighlightDisappear");
         }
 
 
@@ -221,6 +238,7 @@ namespace HexPathResources.Scripts
 
             a = b;
             b.SetCurrent();
+            
             yield break;
         }
 
@@ -253,11 +271,12 @@ namespace HexPathResources.Scripts
             }
             foreach (HexUnit adjacentTile in currentTile.neighbours)
             {
-                if (adjacentTile.isObstacle || adjacentTile.connectedEvent.GetPersistentEventCount() != 0) //Second condition if hex has any "not null" interactions 
-                {
-                    if (adjacentTile != endPoint && !adjacentTile.eventHappened) 
-                        continue;
-                }
+                if (adjacentTile == null) Debug.LogWarning(adjacentTile);
+                    if (adjacentTile.isObstacle || adjacentTile.connectedEvent.GetPersistentEventCount() != 0) //Second condition if hex has any "not null" interactions 
+                    {
+                        if (adjacentTile != endPoint && !adjacentTile.eventHappened) 
+                            continue;
+                    }
                 if (closedPathTiles.Contains(adjacentTile))
                 {
                     continue;
