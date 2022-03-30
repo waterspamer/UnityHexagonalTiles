@@ -46,6 +46,8 @@ namespace HexPathResources.Scripts
 
         public UnityEvent onManualDoubleClickEvent;
 
+        public UnityEvent onNoWayEvent;
+
         public ScrollAndPinch scrollAndPinch;
 
         public List<GeneratedHexDataWrapper> possiblePlacedNewCoordsByNeighbours;
@@ -55,6 +57,13 @@ namespace HexPathResources.Scripts
         public GameObject highlight1;
         
         public GameObject highlight2;
+
+        public Material ifWayExists;
+        
+        public Material ifWayNotExists;
+
+        public Renderer hex;
+
 
 
         [HideInInspector] public HexUnit currentSelectedUnit;
@@ -172,26 +181,29 @@ namespace HexPathResources.Scripts
             highlight2.GetComponent<Animator>().Play("HighlightDisappear");
         }
 
-        
-        
 
+        public Animator playerAnimator;
+        public int pathLength;
         public void Move()
         {
             var path = FindPath(a, b);
+            
             if (path.Count == 0) {ResetAim();
+                playerAnimator.Play("Elf_rider_female_Idle");
+                Debug.Log("NOWAY"); onNoWayEvent?.Invoke();
                 return;
             }
+            playerAnimator.Play("Elf_rider_female_Run");
             StartCoroutine(MoveSet(path));
         }
         
         public void SetAimToPosition(HexUnit unit)
         {
-            highlight1.transform.position = b.transform.position+ new Vector3(0, .12f, 0);
-            highlight1.GetComponent<Animator>().Play("HighlightDisappear");
             b = unit;
 
             highlight2.transform.position = unit.transform.position + new Vector3(0, .12f, 0);
             highlight2.GetComponent<Animator>().Play("HighlightAppear");
+            Debug.Log("Played HL Anim");
             if (b.connectedEvent.GetPersistentEventCount() != 0 && !movingFlag && !b.eventHappened)
             {
                 Debug.Log(b.eventHappened);
@@ -200,7 +212,9 @@ namespace HexPathResources.Scripts
             }
             aimObject.GetComponent<AimScript>().targetPos = unit.transform.position + new Vector3(0, .168f, 0);
             var path = FindPath(a, b);
-            lengthText.text = (path.Count - 1).ToString();
+            hex.sharedMaterial = path.Count == 0 ? ifWayNotExists : ifWayExists;
+            lengthText.color = path.Count == 0 ? Color.red : Color.yellow;
+            lengthText.text = path.Count == 0 ? "NO" :(path.Count - 1).ToString();
             lRend.positionCount = path.Count;
             lRend.SetPositions(path.Select((x => x.transform.position  + new Vector3(0, .1f, 0))).Reverse().ToArray());
             
@@ -213,14 +227,15 @@ namespace HexPathResources.Scripts
 
         public void ResetAim()
         {
-            aimObject.GetComponent<AimScript>().targetPos = a.transform.position +new Vector3(0, .168f, 0);
+            //aimObject.GetComponent<AimScript>().targetPos = a.transform.position +new Vector3(0, .168f, 0);
             lRend.positionCount = 0;
             foreach (var unitObj in units)
             {
                 
                 unitObj.SetPathNeeded(false);
             }
-            
+
+            currentSelectedUnit = null;
             highlight2.GetComponent<Animator>().Play("HighlightDisappear");
         }
 

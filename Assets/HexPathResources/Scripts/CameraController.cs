@@ -1,5 +1,7 @@
 using System;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace HexPathResources.Scripts
 {
@@ -11,16 +13,44 @@ namespace HexPathResources.Scripts
         public PathVisualizer pathVisualizer;
 
         private Vector3 _offset;
-
+        
+        public Toggle toggleOff;
+        public Toggle toggleFreeFollow;
+        public Toggle toggleFree;
+        
 
         private void Awake()
         {
+
+            toggleOff.onValueChanged.AddListener(( value)=>
+            {
+                if (value)
+                    SetControllingType(0);
+            });
+            
+            toggleFreeFollow.onValueChanged.AddListener(( value)=>
+            {
+                if (value)
+                    SetControllingType(1);
+            });
+            
+            toggleFree.onValueChanged.AddListener(( value)=>
+            {
+                if (value)
+                    SetControllingType(2);
+            });
+            
+            
+            
             _offset = cameraPivot.position - playerTransform.position;
             SetControllingType(2);
         }
+        
+        
 
         public void SetControllingType(int controllingMode)
         {
+            if (controllingMode == -1) return;
             cameraControllingMode = (CameraControllingMode) controllingMode;
         }
 

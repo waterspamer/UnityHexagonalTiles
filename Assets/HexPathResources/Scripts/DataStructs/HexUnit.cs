@@ -160,7 +160,6 @@ namespace HexPathResources.Scripts.DataStructs
             if (!isObstacle && !pathVisualizer.movingFlag && !IsPointerOverUIObject() &&
                      !pathVisualizer.isSwipingCamera && pathVisualizer.currentSelectedUnit == this)
             {
-                
                 pathVisualizer.onManualDoubleClickEvent?.Invoke();
                 _isSelected = false;
                 return;
