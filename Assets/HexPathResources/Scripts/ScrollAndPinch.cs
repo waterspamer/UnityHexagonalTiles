@@ -14,6 +14,7 @@ namespace HexPathResources.Scripts
     public bool Rotate;
     protected Plane Plane;
 	public bool swipeActive;
+    public Vector2 lastCoords;
 
 
     public CameraController cameraController;
@@ -44,9 +45,9 @@ namespace HexPathResources.Scripts
             Delta1 = PlanePositionDelta(Input.GetTouch(0));
             if (Input.GetTouch(0).phase == TouchPhase.Moved)
                 Camera.transform.Translate(Delta1, Space.World);
-        
-		
-		if (Mathf.Abs(Input.GetTouch(0).deltaPosition.x)<0.1 && Mathf.Abs(Input.GetTouch(0).deltaPosition.y)<0.1 && (Input.GetTouch(0).phase != TouchPhase.Stationary) && (Input.GetTouch(0).phase != TouchPhase.Ended))
+
+            lastCoords = Input.GetTouch(0).position;
+		if (Mathf.Abs(Input.GetTouch(0).deltaPosition.x)<0.2 && Mathf.Abs(Input.GetTouch(0).deltaPosition.y)<0.2 && (Input.GetTouch(0).phase != TouchPhase.Stationary) && (Input.GetTouch(0).phase != TouchPhase.Ended))
 		{
 			//if (Input.GetTouch(0).phase != TouchPhase.Moved)
 			//{
@@ -54,14 +55,14 @@ namespace HexPathResources.Scripts
 				Debug.Log ("tap");
 			//}
 		}
-		else if (Mathf.Abs(Input.GetTouch(0).deltaPosition.x)>1 && Mathf.Abs(Input.GetTouch(0).deltaPosition.y)>1 && (Input.GetTouch(0).phase != TouchPhase.Stationary))
+		else if (Mathf.Abs(Input.GetTouch(0).deltaPosition.x)>=.2 && Mathf.Abs(Input.GetTouch(0).deltaPosition.y)>=.2 && (Input.GetTouch(0).phase != TouchPhase.Stationary))
 		{
 			swipeActive = false;
 			Debug.Log ("drag");
 		}
 		Debug.Log ("delta" + Input.GetTouch(0).deltaPosition.x + " " + Input.GetTouch(0).deltaPosition.y + "position" + Input.GetTouch(0).position.x + " " + Input.GetTouch(0).position.y);
 		}
-
+        
         //Pinch
         if (Input.touchCount >= 2)
         {

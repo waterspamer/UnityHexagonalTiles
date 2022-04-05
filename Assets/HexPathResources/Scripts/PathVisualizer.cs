@@ -69,9 +69,13 @@ namespace HexPathResources.Scripts
         [HideInInspector] public HexUnit currentSelectedUnit;
 
         public bool isSwipingCamera => scrollAndPinch.swipeActive;
-        
 
-        
+        public Vector2 lastCoord => scrollAndPinch.lastCoords;
+
+        public Text mgn;
+
+
+        public HexUnit lastMouseDownUnit;
         private void Awake()
         {
             possiblePlacedNewCoordsByNeighbours = new List<GeneratedHexDataWrapper>();

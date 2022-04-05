@@ -142,7 +142,10 @@ namespace HexPathResources.Scripts.DataStructs
 
         private int _tapCount;
         
-        #if UNITY_EDITOR
+        
+        
+        /*
+        //#if UNITY_EDITOR
         private void OnMouseDown()
         {
             
@@ -167,15 +170,15 @@ namespace HexPathResources.Scripts.DataStructs
             
             pathVisualizer.currentSelectedUnit = this;
         }
-        #endif
-        public bool eventHappened;
+        //#endif
+        
         /*
         private void OnMouseEnter()
         {
             if (!isObstacle&& !IsPointerOverUIObject() )
                 GetComponent<Renderer>().material.color = Color.yellow;
         }*/
-        
+        public bool eventHappened;
         #if UNITY_EDITOR
         private void OnMouseExit()
         {
@@ -185,14 +188,30 @@ namespace HexPathResources.Scripts.DataStructs
         }
         #endif
 
-        #if (UNITY_ANDROID || UNITY_IOS)&& !UNITY_EDITOR
+
+        private void OnMouseDown()
+        {
+            pathVisualizer.lastMouseDownUnit = this;
+            _firstCoord = Input.GetTouch(0).position;
+        }
+
+        private Vector2 _firstCoord;
+        
+
+        //#if (UNITY_ANDROID || UNITY_IOS)&& !UNITY_EDITOR
         private void OnMouseUp()
         {
-            if (pathVisualizer.movingFlag) return;
+            //Debug.LogWarning(Input.GetTouch(0).phase.ToString());
+            pathVisualizer.mgn.text = $"mgntd: {(pathVisualizer.lastCoord - _firstCoord).magnitude}";
+            if ((pathVisualizer.lastCoord - _firstCoord).magnitude > .02f) return;
+            //pathVisualizer.currentSelectedUnit = null;
             if (!isObstacle && !pathVisualizer.movingFlag && !IsPointerOverUIObject() && pathVisualizer.isSwipingCamera)
             {
                 if (pathVisualizer.currentSelectedUnit != this)
+                {
                     pathVisualizer.SetAimToPosition(this);
+                    
+                }
                 pathVisualizer.b = this;
                 pathVisualizer.SetDecisionMode();
                 _isSelected = true;
@@ -208,7 +227,7 @@ namespace HexPathResources.Scripts.DataStructs
             }
             pathVisualizer.currentSelectedUnit = this;
         }
-        #endif
+        //#endif
 
         [CanBeNull] public HexUnit TryGetNeighbourUnit()
         {
