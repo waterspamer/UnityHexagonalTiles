@@ -64,7 +64,11 @@ namespace HexPathResources.Scripts
 
         public Renderer hex;
 
+        public float swipeDelta;
 
+        public Slider slider;
+
+        public Text sliderValue;
 
         [HideInInspector] public HexUnit currentSelectedUnit;
 
@@ -78,10 +82,31 @@ namespace HexPathResources.Scripts
         public HexUnit lastMouseDownUnit;
         private void Awake()
         {
+            if (!PlayerPrefs.HasKey("sensivity"))
+            {
+                swipeDelta = slider.value;
+                PlayerPrefs.SetFloat("sensivity", slider.value);
+                PlayerPrefs.Save();
+            }
+            else
+            {
+                swipeDelta = PlayerPrefs.GetFloat("sensivity");
+                slider.value = swipeDelta;
+                sliderValue.text = swipeDelta.ToString();
+            }
+            slider.onValueChanged.AddListener((value) =>
+            {
+                sliderValue.text = value.ToString();
+                swipeDelta = value;
+                PlayerPrefs.SetFloat("sensivity", slider.value);
+                PlayerPrefs.Save();
+            });
             possiblePlacedNewCoordsByNeighbours = new List<GeneratedHexDataWrapper>();
             Application.targetFrameRate = 60;
             a.SetCurrent();
         }
+
+
 
         private void Start()
         {
@@ -91,6 +116,7 @@ namespace HexPathResources.Scripts
         private void OnApplicationQuit()
         {
             StopAllCoroutines();
+            PlayerPrefs.Save();
         }
 
 #if UNITY_EDITOR
@@ -177,12 +203,13 @@ namespace HexPathResources.Scripts
             hexUnits.Last().SetCurrent();
             a = hexUnits.Last();
             onStopMoveEvent?.Invoke();
-            movingFlag = false;
+            
             if (!a.eventHappened)
                 a.connectedEvent?.Invoke();
             a.eventHappened = true;
             a.SetPathNeeded(false);
             highlight2.GetComponent<Animator>().Play("HighlightDisappear");
+            movingFlag = false;
         }
 
 

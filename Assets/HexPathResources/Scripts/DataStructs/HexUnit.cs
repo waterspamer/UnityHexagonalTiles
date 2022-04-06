@@ -203,7 +203,7 @@ namespace HexPathResources.Scripts.DataStructs
         {
             //Debug.LogWarning(Input.GetTouch(0).phase.ToString());
             pathVisualizer.mgn.text = $"mgntd: {(pathVisualizer.lastCoord - _firstCoord).magnitude}";
-            if ((pathVisualizer.lastCoord - _firstCoord).magnitude > .02f) return;
+            if ((pathVisualizer.lastCoord - _firstCoord).magnitude > pathVisualizer.swipeDelta || pathVisualizer.movingFlag || pathVisualizer.a == this) return;
             //pathVisualizer.currentSelectedUnit = null;
             if (!isObstacle && !pathVisualizer.movingFlag && !IsPointerOverUIObject() && pathVisualizer.isSwipingCamera)
             {

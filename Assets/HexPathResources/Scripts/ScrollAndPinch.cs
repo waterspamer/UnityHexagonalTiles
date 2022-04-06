@@ -47,7 +47,7 @@ namespace HexPathResources.Scripts
                 Camera.transform.Translate(Delta1, Space.World);
 
             lastCoords = Input.GetTouch(0).position;
-		if (Mathf.Abs(Input.GetTouch(0).deltaPosition.x)<0.2 && Mathf.Abs(Input.GetTouch(0).deltaPosition.y)<0.2 && (Input.GetTouch(0).phase != TouchPhase.Stationary) && (Input.GetTouch(0).phase != TouchPhase.Ended))
+		if (Mathf.Abs(Input.GetTouch(0).deltaPosition.x)<pathVisualizer.swipeDelta && Mathf.Abs(Input.GetTouch(0).deltaPosition.y)<pathVisualizer.swipeDelta && (Input.GetTouch(0).phase != TouchPhase.Stationary) && (Input.GetTouch(0).phase != TouchPhase.Ended))
 		{
 			//if (Input.GetTouch(0).phase != TouchPhase.Moved)
 			//{
@@ -55,7 +55,7 @@ namespace HexPathResources.Scripts
 				Debug.Log ("tap");
 			//}
 		}
-		else if (Mathf.Abs(Input.GetTouch(0).deltaPosition.x)>=.2 && Mathf.Abs(Input.GetTouch(0).deltaPosition.y)>=.2 && (Input.GetTouch(0).phase != TouchPhase.Stationary))
+		else if (Mathf.Abs(Input.GetTouch(0).deltaPosition.x)>=pathVisualizer.swipeDelta && Mathf.Abs(Input.GetTouch(0).deltaPosition.y)>=pathVisualizer.swipeDelta && (Input.GetTouch(0).phase != TouchPhase.Stationary))
 		{
 			swipeActive = false;
 			Debug.Log ("drag");
