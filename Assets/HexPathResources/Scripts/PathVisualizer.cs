@@ -206,6 +206,13 @@ namespace HexPathResources.Scripts
             
             if (!a.eventHappened)
                 a.connectedEvent?.Invoke();
+            if (a.connectedEvent.GetPersistentEventCount() != 0)
+            {
+                player.currentFood-= player.eventCost;
+                player.foodText.text = $"{player.currentFood}/{player.maxFood}";
+                player.foodText.color = new Color(1f - ((float) player.currentFood / player.maxFood), ((float)player.currentFood / player.maxFood), 0);
+                
+            }
             a.eventHappened = true;
             a.SetPathNeeded(false);
             highlight2.GetComponent<Animator>().Play("HighlightDisappear");
@@ -218,12 +225,31 @@ namespace HexPathResources.Scripts
         public void Move()
         {
             var path = FindPath(a, b);
+
+            
+            
             
             if (path.Count == 0) {ResetAim();
                 playerAnimator.Play("Elf_rider_female_Idle");
                 Debug.Log("NOWAY"); onNoWayEvent?.Invoke();
                 return;
             }
+            
+            
+            if ((path.Count - 1) * player.singleUnitPathCost + (b.connectedEvent.GetPersistentEventCount() != 0 && !b.eventHappened ? player.eventCost : 0) > player.currentFood)
+            {
+                //not enough food case
+                ResetAim();
+                playerAnimator.Play("Elf_rider_female_Idle");
+                Debug.Log("NOWAY"); onNoWayEvent?.Invoke();
+                return;
+            }
+
+            player.currentFood -= (path.Count - 1) * player.singleUnitPathCost;
+            player.foodText.text = $"{player.currentFood}/{player.maxFood}";
+            player.foodText.color = new Color(1f - ((float) player.currentFood / player.maxFood), ((float)player.currentFood / player.maxFood), 0);
+            
+            
             playerAnimator.Play("Elf_rider_female_Run");
             StartCoroutine(MoveSet(path));
         }
@@ -245,7 +271,12 @@ namespace HexPathResources.Scripts
             var path = FindPath(a, b);
             hex.sharedMaterial = path.Count == 0 ? ifWayNotExists : ifWayExists;
             lengthText.color = path.Count == 0 ? Color.red : Color.yellow;
-            lengthText.text = path.Count == 0 ? "NO" :(path.Count - 1).ToString();
+            if (path.Count == 0)
+            {
+                lengthText.text = "NO";
+            }
+            else
+                lengthText.text = b.connectedEvent.GetPersistentEventCount()!=0 && !b.eventHappened ? $"{(path.Count -1) * player.singleUnitPathCost}+{player.eventCost}" : ((path.Count -1) * player.singleUnitPathCost).ToString();
             lRend.positionCount = path.Count;
             lRend.SetPositions(path.Select((x => x.transform.position  + new Vector3(0, .1f, 0))).Reverse().ToArray());
             
