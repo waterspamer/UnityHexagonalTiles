@@ -70,6 +70,8 @@ namespace HexPathResources.Scripts
 
         public Text sliderValue;
 
+        public HexUnit trueStart;
+
         [HideInInspector] public HexUnit currentSelectedUnit;
 
         public bool isSwipingCamera => scrollAndPinch.swipeActive;
@@ -103,7 +105,24 @@ namespace HexPathResources.Scripts
             });
             possiblePlacedNewCoordsByNeighbours = new List<GeneratedHexDataWrapper>();
             Application.targetFrameRate = 60;
-            a.SetCurrent();
+
+            if (!PlayerPrefs.HasKey("rootTileIndex"))
+            {
+                PlayerPrefs.SetInt("rootTileIndex", units.IndexOf(trueStart));
+            }
+
+            if (!PlayerPrefs.HasKey("lastTileIndex"))
+            {
+                PlayerPrefs.SetInt("lastTileIndex", units.IndexOf(a));
+            }
+            else
+            {
+                a = units[PlayerPrefs.GetInt("lastTileIndex")];
+                a.SetCurrent();
+                if (PlayerPrefs.GetInt("lastTileIndex") != PlayerPrefs.GetInt("rootTileIndex"))
+                    trueStart.SetEmpty();
+            }
+            
         }
 
 
@@ -208,11 +227,14 @@ namespace HexPathResources.Scripts
                 a.connectedEvent?.Invoke();
             if (a.connectedEvent.GetPersistentEventCount() != 0)
             {
-                player.currentFood-= player.eventCost;
+                player.currentFood -= player.eventCost;
                 player.foodText.text = $"{player.currentFood}/{player.maxFood}";
                 player.foodText.color = new Color(1f - ((float) player.currentFood / player.maxFood), ((float)player.currentFood / player.maxFood), 0);
-                
+                PlayerPrefs.SetInt("currentFood", player.currentFood);
+                PlayerPrefs.Save();
             }
+            PlayerPrefs.SetInt("lastTileIndex", units.IndexOf(a));
+            PlayerPrefs.Save();
             a.eventHappened = true;
             a.SetPathNeeded(false);
             highlight2.GetComponent<Animator>().Play("HighlightDisappear");
@@ -248,7 +270,8 @@ namespace HexPathResources.Scripts
             player.currentFood -= (path.Count - 1) * player.singleUnitPathCost;
             player.foodText.text = $"{player.currentFood}/{player.maxFood}";
             player.foodText.color = new Color(1f - ((float) player.currentFood / player.maxFood), ((float)player.currentFood / player.maxFood), 0);
-            
+            PlayerPrefs.SetInt("currentFood", player.currentFood);
+            PlayerPrefs.Save();
             
             playerAnimator.Play("Elf_rider_female_Run");
             StartCoroutine(MoveSet(path));

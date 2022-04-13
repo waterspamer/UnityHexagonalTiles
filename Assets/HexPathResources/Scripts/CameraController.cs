@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 namespace HexPathResources.Scripts
 {
+    
     public class CameraController : MonoBehaviour
     {
         public float cameraSpeed = 4f;
@@ -12,7 +13,7 @@ namespace HexPathResources.Scripts
         public Transform playerTransform;
         public PathVisualizer pathVisualizer;
 
-        private Vector3 _offset;
+        public Vector3 offset;
         
         public Toggle toggleOff;
         public Toggle toggleFreeFollow;
@@ -42,7 +43,8 @@ namespace HexPathResources.Scripts
             
             
             
-            _offset = cameraPivot.position - playerTransform.position;
+            offset = cameraPivot.position - playerTransform.position;
+            //Debug.Log(offset);
             SetControllingType(2);
         }
         
@@ -70,11 +72,12 @@ namespace HexPathResources.Scripts
                 case CameraControllingMode.Free:
                     return;
                 case CameraControllingMode.Off:
-                    transform.position = Vector3.Lerp(transform.position, playerTransform.position + _offset,
+                    transform.position = Vector3.Lerp(transform.position, playerTransform.position + offset,
                         Time.deltaTime * cameraSpeed);
+                    
                     break;
                 case CameraControllingMode.FreeFollow:
-                    if (pathVisualizer.movingFlag)transform.position = Vector3.Lerp(transform.position, playerTransform.position + _offset,
+                    if (pathVisualizer.movingFlag)transform.position = Vector3.Lerp(transform.position, playerTransform.position + offset,
                         Time.deltaTime * cameraSpeed);
                     else
                         return;

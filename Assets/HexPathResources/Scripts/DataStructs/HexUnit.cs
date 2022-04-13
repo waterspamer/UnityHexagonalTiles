@@ -146,6 +146,8 @@ namespace HexPathResources.Scripts.DataStructs
         
         
         //#if UNITY_EDITOR
+        
+        /*
         private void OnMouseDown()
         {
             
@@ -179,21 +181,14 @@ namespace HexPathResources.Scripts.DataStructs
                 GetComponent<Renderer>().material.color = Color.yellow;
         }*/
         public bool eventHappened;
-        #if UNITY_EDITOR
-        private void OnMouseExit()
-        {
-            if (!isObstacle)
-                GetComponent<Renderer>().material.color = Color.white;
-            
-        }
-        #endif
 
-        /*
+
+        
         private void OnMouseDown()
         {
             pathVisualizer.lastMouseDownUnit = this;
             _firstCoord = Input.GetTouch(0).position;
-        }*/
+        }
 
         private Vector2 _firstCoord;
         
