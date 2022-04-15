@@ -101,6 +101,9 @@ namespace HexPathResources.Scripts.DataStructs
         }
         #endif
 
+
+        public void SetReachable(bool isReachable) => outlineRound.GetComponent<MeshRenderer>().sharedMaterial =
+            isReachable ? pathVisualizer.defaultCylinderMat : pathVisualizer.nonReachedCylinderMat; 
         public void SetPathNeeded(bool required) => outlineRound.SetActive(required);
 
         public void SetCurrent()
@@ -142,7 +145,31 @@ namespace HexPathResources.Scripts.DataStructs
 
         private int _tapCount;
         
-        
+        /*
+        private void OnMouseDown()
+        {
+            
+            //_tapCount++;
+            if (this == pathVisualizer.a) return;
+            if (!isObstacle && !pathVisualizer.movingFlag && !IsPointerOverUIObject() && !pathVisualizer.isSwipingCamera)
+            {
+                if (pathVisualizer.currentSelectedUnit != this )
+                    pathVisualizer.SetAimToPosition(this);
+                pathVisualizer.b = this;
+                pathVisualizer.SetDecisionMode();
+                _isSelected = true;
+            }
+            
+            if (!isObstacle && !pathVisualizer.movingFlag && !IsPointerOverUIObject() &&
+                !pathVisualizer.isSwipingCamera && pathVisualizer.currentSelectedUnit == this)
+            {
+                pathVisualizer.onManualDoubleClickEvent?.Invoke();
+                _isSelected = false;
+                return;
+            }
+            
+            pathVisualizer.currentSelectedUnit = this;
+        } */
         
         
         //#if UNITY_EDITOR

@@ -59,7 +59,7 @@ namespace HexPathResources.Scripts
             else
             {
                 currentFood = PlayerPrefs.GetInt("currentFood");
-                
+                if (currentFood == 0) currentFood = maxFood;
             }
             
             if (!PlayerPrefs.HasKey("maxFood"))
@@ -83,6 +83,7 @@ namespace HexPathResources.Scripts
                 PlayerPrefs.SetFloat("eventCost", eventCostSlider.value);
                 PlayerPrefs.Save();
             }
+            
             else
             {
                 eventCost = (int)PlayerPrefs.GetFloat("eventCost");

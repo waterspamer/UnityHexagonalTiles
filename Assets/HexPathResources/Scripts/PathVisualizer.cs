@@ -28,6 +28,10 @@ namespace HexPathResources.Scripts
         public List<HexUnit> m_Tst;
 
         [SerializeField] public List<HexUnit> units;
+
+        public Material defaultCylinderMat;
+        public Material nonReachedCylinderMat;
+        
         
 
         public Text lengthText;
@@ -53,10 +57,12 @@ namespace HexPathResources.Scripts
         public List<GeneratedHexDataWrapper> possiblePlacedNewCoordsByNeighbours;
 
         public GameObject hexPrefab;
-
-        public GameObject highlight1;
         
         public GameObject highlight2;
+
+        public GameObject highlightTrue;
+
+        public GameObject highlightFalse;
 
         public Material ifWayExists;
         
@@ -74,6 +80,8 @@ namespace HexPathResources.Scripts
 
         [HideInInspector] public HexUnit currentSelectedUnit;
 
+        private Color _startColor;
+
         public bool isSwipingCamera => scrollAndPinch.swipeActive;
 
         public Vector2 lastCoord => scrollAndPinch.lastCoords;
@@ -84,6 +92,7 @@ namespace HexPathResources.Scripts
         public HexUnit lastMouseDownUnit;
         private void Awake()
         {
+            _startColor = highLightMesh.GetComponent<Renderer>().material.color;
             if (!PlayerPrefs.HasKey("sensivity"))
             {
                 swipeDelta = slider.value;
@@ -292,16 +301,69 @@ namespace HexPathResources.Scripts
             }
             aimObject.GetComponent<AimScript>().targetPos = unit.transform.position + new Vector3(0, .168f, 0);
             var path = FindPath(a, b);
-            hex.sharedMaterial = path.Count == 0 ? ifWayNotExists : ifWayExists;
+            
             lengthText.color = path.Count == 0 ? Color.red : Color.yellow;
+            var pathCost = b.connectedEvent.GetPersistentEventCount() != 0 && !b.eventHappened
+                ? (path.Count - 1) * player.singleUnitPathCost + player.eventCost
+                : (path.Count - 1) * player.singleUnitPathCost;
             if (path.Count == 0)
             {
                 lengthText.text = "NO";
             }
             else
+            {
                 lengthText.text = b.connectedEvent.GetPersistentEventCount()!=0 && !b.eventHappened ? $"{(path.Count -1) * player.singleUnitPathCost}+{player.eventCost}" : ((path.Count -1) * player.singleUnitPathCost).ToString();
+               
+
+                lengthText.color = pathCost > player.currentFood ? Color.red : Color.yellow;
+            }
             lRend.positionCount = path.Count;
             lRend.SetPositions(path.Select((x => x.transform.position  + new Vector3(0, .1f, 0))).Reverse().ToArray());
+
+
+           
+            
+            for (int i = 0; i < units.Count; i++)
+            {
+
+                var contains = path.Contains(units[i]);
+                if (contains)
+                {
+                    units[i].SetPathNeeded(true);
+
+                    if (units[i] != path.Last())
+                    {
+                        var mat = highLightMesh.GetComponent<MeshRenderer>().sharedMaterial;
+                        units[i].SetReachable((path.IndexOf(units[i])) * player.singleUnitPathCost <= player.currentFood);
+                        //highLightMesh.GetComponent<Renderer>().sharedMaterial = (path.IndexOf(units[i])) * player.singleUnitPathCost <= player.currentFood ?ifWayExists: ifWayNotExists;
+                    }
+
+
+                    else
+                    {
+                        var t = units[i].connectedEvent.GetPersistentEventCount() != 0 && !units[i].eventHappened
+                            ? 1
+                            : 0;
+                        units[i].SetReachable(
+                            pathCost <= player.currentFood);
+                        var mat = highLightMesh.GetComponent<MeshRenderer>().sharedMaterial;
+                        //highLightMesh.GetComponent<Renderer>().material.color =pathCost <= player.currentFood ? _startColor: Color.red;
+                        //highLightMesh.GetComponent<MeshRenderer>().sharedMaterial.SetColor("_Main", pathCost <= player.currentFood ? _startColor : Color.red);
+                        //highLightMesh.GetComponent<Renderer>().sharedMaterial = pathCost <= player.currentFood ? ifWayExists: ifWayNotExists;
+                        
+                        highlightFalse.SetActive(!(pathCost <= player.currentFood));
+                        highlightTrue.SetActive(pathCost <= player.currentFood);
+                        
+                        
+                        Debug.Log(highLightMesh.GetComponent<Renderer>().material.name);
+                    }
+                        
+
+                }
+                
+            }
+            
+            //hex.material = path.Count == 0 ? ifWayNotExists : ifWayExists;
             
             foreach (var unitObj in units)
             {
@@ -309,7 +371,7 @@ namespace HexPathResources.Scripts
             }
             
         }
-
+        public GameObject highLightMesh;
         public void ResetAim()
         {
             //aimObject.GetComponent<AimScript>().targetPos = a.transform.position +new Vector3(0, .168f, 0);
