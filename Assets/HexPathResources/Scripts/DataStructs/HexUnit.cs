@@ -15,7 +15,7 @@ namespace HexPathResources.Scripts.DataStructs
     [Serializable]
     public class HexUnit : MonoBehaviour
     {
-
+        
         public UnityEvent connectedEvent;
         public UnityEvent onSelectionInfo;
         
@@ -27,10 +27,20 @@ namespace HexPathResources.Scripts.DataStructs
 
         public Vector3Int coordinates;
 
+        public HexConfiguration.HexType hexType;
+        public HexConfiguration.EventType eventType;
+        
+
         private bool _isSelected;
 
+        public Material empty;
+        public Material hill;
+        public Material forest;
+        public Material swamp;
+
+
         
-        
+
         //TODO static class or Singleton
         public PathVisualizer pathVisualizer;
 
@@ -43,8 +53,7 @@ namespace HexPathResources.Scripts.DataStructs
 
         public UnityEvent onWalkEvent;
 
-        
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             
@@ -208,6 +217,7 @@ namespace HexPathResources.Scripts.DataStructs
                 GetComponent<Renderer>().material.color = Color.yellow;
         }*/
         public bool eventHappened;
+        public int eventCost;
 
 
         

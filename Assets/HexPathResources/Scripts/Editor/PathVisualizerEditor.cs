@@ -65,6 +65,7 @@ namespace HexPathResources.Scripts.Editor
                 }
             }
             //Debug.Log(serializedObject.hasModifiedProperties);
+            
             EditorUtility.SetDirty(pTarget);
             serializedObject.ApplyModifiedProperties();
         }

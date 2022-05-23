@@ -92,7 +92,7 @@ namespace HexPathResources.Scripts
         public HexUnit lastMouseDownUnit;
         private void Awake()
         {
-            _startColor = highLightMesh.GetComponent<Renderer>().material.color;
+            _startColor = highLightMesh.GetComponent<Renderer>().sharedMaterial.color;
             if (!PlayerPrefs.HasKey("sensivity"))
             {
                 swipeDelta = slider.value;
@@ -236,7 +236,7 @@ namespace HexPathResources.Scripts
                 a.connectedEvent?.Invoke();
             if (a.connectedEvent.GetPersistentEventCount() != 0)
             {
-                player.currentFood -= player.eventCost;
+                player.currentFood -= HexConfiguration.costByEvent[a.eventType];
                 player.foodText.text = $"{player.currentFood}/{player.maxFood}";
                 player.foodText.color = new Color(1f - ((float) player.currentFood / player.maxFood), ((float)player.currentFood / player.maxFood), 0);
                 PlayerPrefs.SetInt("currentFood", player.currentFood);
@@ -247,9 +247,24 @@ namespace HexPathResources.Scripts
             a.eventHappened = true;
             a.SetPathNeeded(false);
             highlight2.GetComponent<Animator>().Play("HighlightDisappear");
+
+            yield return new WaitForSeconds(.6f);
+            
             movingFlag = false;
         }
 
+
+        public int CalculatePathCost(List<HexUnit> units)
+        {
+            var cost = 0;
+
+            for (int i = 1; i < units.Count; i++)
+            {
+                if (i == units.Count - 1 && b.connectedEvent.GetPersistentEventCount() != 0 && !b.eventHappened) continue;
+                    cost += HexConfiguration.costByType[units[i].hexType];
+            }
+            return cost;
+        }
 
         public Animator playerAnimator;
         public int pathLength;
@@ -257,8 +272,8 @@ namespace HexPathResources.Scripts
         {
             var path = FindPath(a, b);
 
-            
-            
+
+            var pathCost = CalculatePathCost(path);
             
             if (path.Count == 0) {ResetAim();
                 playerAnimator.Play("Elf_rider_female_Idle");
@@ -267,16 +282,16 @@ namespace HexPathResources.Scripts
             }
             
             
-            if ((path.Count - 1) * player.singleUnitPathCost + (b.connectedEvent.GetPersistentEventCount() != 0 && !b.eventHappened ? player.eventCost : 0) > player.currentFood)
+            if (pathCost + (b.connectedEvent.GetPersistentEventCount() != 0 && !b.eventHappened ? HexConfiguration.costByEvent[b.eventType] : 0) > player.currentFood)
             {
                 //not enough food case
                 ResetAim();
                 playerAnimator.Play("Elf_rider_female_Idle");
-                Debug.Log("NOWAY"); onNoWayEvent?.Invoke();
+                Debug.Log("!FOOD"); onNoWayEvent?.Invoke();
                 return;
             }
 
-            player.currentFood -= (path.Count - 1) * player.singleUnitPathCost;
+            player.currentFood -= pathCost;
             player.foodText.text = $"{player.currentFood}/{player.maxFood}";
             player.foodText.color = new Color(1f - ((float) player.currentFood / player.maxFood), ((float)player.currentFood / player.maxFood), 0);
             PlayerPrefs.SetInt("currentFood", player.currentFood);
@@ -285,6 +300,13 @@ namespace HexPathResources.Scripts
             playerAnimator.Play("Elf_rider_female_Run");
             StartCoroutine(MoveSet(path));
         }
+
+
+        public Material empty;
+        public Material hill;
+        public Material forest;
+        public Material swamp;
+
         
         public void SetAimToPosition(HexUnit unit)
         {
@@ -301,21 +323,24 @@ namespace HexPathResources.Scripts
             }
             aimObject.GetComponent<AimScript>().targetPos = unit.transform.position + new Vector3(0, .168f, 0);
             var path = FindPath(a, b);
+
+            var pathCost = CalculatePathCost(path);
             
             lengthText.color = path.Count == 0 ? Color.red : Color.yellow;
+            /*
             var pathCost = b.connectedEvent.GetPersistentEventCount() != 0 && !b.eventHappened
                 ? (path.Count - 1) * player.singleUnitPathCost + player.eventCost
-                : (path.Count - 1) * player.singleUnitPathCost;
+                : (path.Count - 1) * player.singleUnitPathCost; */
             if (path.Count == 0)
             {
                 lengthText.text = "NO";
             }
             else
             {
-                lengthText.text = b.connectedEvent.GetPersistentEventCount()!=0 && !b.eventHappened ? $"{(path.Count -1) * player.singleUnitPathCost}+{player.eventCost}" : ((path.Count -1) * player.singleUnitPathCost).ToString();
+                lengthText.text = b.connectedEvent.GetPersistentEventCount()!=0 && !b.eventHappened ? $"{pathCost}+{HexConfiguration.costByEvent[b.eventType]}" : (pathCost).ToString();
                
 
-                lengthText.color = pathCost > player.currentFood ? Color.red : Color.yellow;
+                lengthText.color = pathCost > player.currentFood + HexConfiguration.costByEvent[b.eventType] ? Color.red : Color.yellow;
             }
             lRend.positionCount = path.Count;
             lRend.SetPositions(path.Select((x => x.transform.position  + new Vector3(0, .1f, 0))).Reverse().ToArray());
@@ -323,18 +348,39 @@ namespace HexPathResources.Scripts
 
            
             
-            for (int i = 0; i < units.Count; i++)
+            for (int i = 1; i < units.Count; i++)
             {
-
+                var cost = 0;
                 var contains = path.Contains(units[i]);
-                if (contains)
+
+                switch (units[i].hexType)
+                {
+                    case HexConfiguration.HexType.Empty:
+                        units[i].outlineRound.GetComponent<MeshRenderer>().sharedMaterial = empty;
+                        break;
+                    case HexConfiguration.HexType.Hill:
+                        units[i].outlineRound.GetComponent<MeshRenderer>().sharedMaterial = hill;
+                        break;
+                    case HexConfiguration.HexType.Forest:
+                        units[i].outlineRound.GetComponent<MeshRenderer>().sharedMaterial = forest;
+                        break;
+                    case HexConfiguration.HexType.Swamp:
+                        units[i].outlineRound.GetComponent<MeshRenderer>().sharedMaterial = swamp;
+                        break;
+                }
+                    
+
+                    if (contains)
                 {
                     units[i].SetPathNeeded(true);
 
                     if (units[i] != path.Last())
                     {
+                        cost += HexConfiguration.costByType[units[i].hexType];
                         var mat = highLightMesh.GetComponent<MeshRenderer>().sharedMaterial;
-                        units[i].SetReachable((path.IndexOf(units[i])) * player.singleUnitPathCost <= player.currentFood);
+                        //units[i].SetReachable((cost <= player.currentFood));
+                        
+                        
                         //highLightMesh.GetComponent<Renderer>().sharedMaterial = (path.IndexOf(units[i])) * player.singleUnitPathCost <= player.currentFood ?ifWayExists: ifWayNotExists;
                     }
 
@@ -344,15 +390,15 @@ namespace HexPathResources.Scripts
                         var t = units[i].connectedEvent.GetPersistentEventCount() != 0 && !units[i].eventHappened
                             ? 1
                             : 0;
-                        units[i].SetReachable(
-                            pathCost <= player.currentFood);
+                        //units[i].SetReachable(
+                            //pathCost <= player.currentFood);
                         var mat = highLightMesh.GetComponent<MeshRenderer>().sharedMaterial;
                         //highLightMesh.GetComponent<Renderer>().material.color =pathCost <= player.currentFood ? _startColor: Color.red;
                         //highLightMesh.GetComponent<MeshRenderer>().sharedMaterial.SetColor("_Main", pathCost <= player.currentFood ? _startColor : Color.red);
                         //highLightMesh.GetComponent<Renderer>().sharedMaterial = pathCost <= player.currentFood ? ifWayExists: ifWayNotExists;
                         
-                        highlightFalse.SetActive(!(pathCost <= player.currentFood));
-                        highlightTrue.SetActive(pathCost <= player.currentFood);
+                        highlightFalse.SetActive(!(pathCost + HexConfiguration.costByEvent[b.eventType] <= player.currentFood));
+                        highlightTrue.SetActive(pathCost + HexConfiguration.costByEvent[b.eventType] <= player.currentFood);
                         
                         
                         Debug.Log(highLightMesh.GetComponent<Renderer>().material.name);

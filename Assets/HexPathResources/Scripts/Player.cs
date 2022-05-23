@@ -11,11 +11,41 @@ namespace HexPathResources.Scripts
 
         public PathVisualizer pathVisualizer;
 
-        public Slider singleMoveCostSlider;
+        
+        [Header("Hex type settings")]
+
+        
+        public Slider emptyMoveCostSlider;
+        public Slider hillMoveCostSlider;
+        public Slider forestMoveCostSlider;
+        public Slider swampMoveCostSlider;
+
+        [Header("Event type settings")] 
+        public Slider cheapEventSlider;
+        public Slider mediumEventSlider;
+        public Slider expensiveEventSlider;
+
+        
+        
+        
         public Slider maxFoodSlider;
+
+        public InputField maxFoodField;
+        
         public Slider eventCostSlider;
 
-        public Text singleMoveCostText;
+        public Text emptyMoveCostText;
+        public Text hillMoveCostText;
+        public Text forestMoveCostText;
+        public Text swampMoveCostText;
+
+
+        public Text cheapEventText;
+        public Text mediumEventText;
+        public Text expensiveEventText;
+
+        
+        
         public Text maxFoodText;
         public Text eventCostText;
 
@@ -27,7 +57,7 @@ namespace HexPathResources.Scripts
 
         public HexUnit targetUnit;
 
-        public int maxFood = 20;
+        public int maxFood = 100;
 
         public int currentFood = 20;
 
@@ -64,14 +94,14 @@ namespace HexPathResources.Scripts
             
             if (!PlayerPrefs.HasKey("maxFood"))
             {
-                maxFood = (int)maxFoodSlider.value;
-                PlayerPrefs.SetFloat("maxFood", maxFoodSlider.value);
+                maxFood = Convert.ToInt32(maxFoodField.text);
+                PlayerPrefs.SetFloat("maxFood", Convert.ToInt32(maxFoodField.text));
                 PlayerPrefs.Save();
             }
             else
             {
                 maxFood = (int)PlayerPrefs.GetFloat("maxFood");
-                maxFoodSlider.value = maxFood;
+                maxFoodField.text = maxFood.ToString();
                 maxFoodText.text = $"Max food count : {maxFood}";
                 foodText.text = $"{currentFood}/{maxFood}";
                 foodText.color = new Color(1f - ((float) currentFood / maxFood), ((float)currentFood / maxFood), 0);
@@ -91,39 +121,173 @@ namespace HexPathResources.Scripts
                 eventCostText.text = $"Interaction cost : {eventCost}";
             }
             
+            
+            //empty
             if (!PlayerPrefs.HasKey("singleMoveCost"))
             {
-                singleUnitPathCost = (int)singleMoveCostSlider.value;
-                PlayerPrefs.SetFloat("singleMoveCost", singleMoveCostSlider.value);
+                HexConfiguration.costByType[HexConfiguration.HexType.Empty]= (int)emptyMoveCostSlider.value;
+                PlayerPrefs.SetFloat("singleMoveCost", emptyMoveCostSlider.value);
                 PlayerPrefs.Save();
             }
             else
             {
-                singleUnitPathCost = (int)PlayerPrefs.GetFloat("singleMoveCost");
-                singleMoveCostSlider.value = singleUnitPathCost;
-                singleMoveCostText.text =  $"Single move cost : {singleUnitPathCost}";
+                HexConfiguration.costByType[HexConfiguration.HexType.Empty] = (int)PlayerPrefs.GetFloat("singleMoveCost");
+                emptyMoveCostSlider.value = HexConfiguration.costByType[HexConfiguration.HexType.Empty];
+                emptyMoveCostText.text =  $"Empty move cost : {HexConfiguration.costByType[HexConfiguration.HexType.Empty]}";
+            }
+            //hill
+            if (!PlayerPrefs.HasKey("hillMoveCost"))
+            {
+                HexConfiguration.costByType[HexConfiguration.HexType.Hill] = (int)hillMoveCostSlider.value;
+                PlayerPrefs.SetFloat("hillMoveCost", hillMoveCostSlider.value);
+                PlayerPrefs.Save();
+            }
+            else
+            {
+                HexConfiguration.costByType[HexConfiguration.HexType.Hill] = (int)PlayerPrefs.GetFloat("hillMoveCost");
+                hillMoveCostSlider.value = HexConfiguration.costByType[HexConfiguration.HexType.Hill];
+                hillMoveCostText.text =  $"Hill move cost : {HexConfiguration.costByType[HexConfiguration.HexType.Hill]}";
+            }
+            //forest
+            if (!PlayerPrefs.HasKey("forestMoveCost"))
+            {
+                HexConfiguration.costByType[HexConfiguration.HexType.Forest] = (int)forestMoveCostSlider.value;
+                PlayerPrefs.SetFloat("singleMoveCost", forestMoveCostSlider.value);
+                PlayerPrefs.Save();
+            }
+            else
+            {
+                HexConfiguration.costByType[HexConfiguration.HexType.Forest] = (int)PlayerPrefs.GetFloat("forestMoveCost");
+                forestMoveCostSlider.value = HexConfiguration.costByType[HexConfiguration.HexType.Forest];
+                forestMoveCostText.text =  $"Forest move cost : {HexConfiguration.costByType[HexConfiguration.HexType.Forest]}";
+            }
+            //swamp
+            if (!PlayerPrefs.HasKey("swampMoveCost"))
+            {
+                HexConfiguration.costByType[HexConfiguration.HexType.Swamp] = (int)swampMoveCostSlider.value;
+                PlayerPrefs.SetFloat("swampMoveCost", swampMoveCostSlider.value);
+                PlayerPrefs.Save();
+            }
+            else
+            {
+                HexConfiguration.costByType[HexConfiguration.HexType.Swamp] = (int)PlayerPrefs.GetFloat("swampMoveCost");
+                swampMoveCostSlider.value = HexConfiguration.costByType[HexConfiguration.HexType.Swamp];
+                swampMoveCostText.text =  $"Swamp move cost : {HexConfiguration.costByType[HexConfiguration.HexType.Swamp]}";
+            }
+            
+            //cheapEvent
+            if (!PlayerPrefs.HasKey("cheapEventCost"))
+            {
+                HexConfiguration.costByEvent[HexConfiguration.EventType.Cheap] = (int)cheapEventSlider.value;
+                PlayerPrefs.SetFloat("cheapEventCost", HexConfiguration.costByEvent[HexConfiguration.EventType.Cheap]);
+                PlayerPrefs.Save();
+            }
+            else
+            {
+                HexConfiguration.costByEvent[HexConfiguration.EventType.Cheap] = (int)PlayerPrefs.GetFloat("cheapEventCost");
+                cheapEventSlider.value = HexConfiguration.costByEvent[HexConfiguration.EventType.Cheap];
+                cheapEventText.text =  $"Cheap event : {HexConfiguration.costByEvent[HexConfiguration.EventType.Cheap]}";
+            }
+            
+            //mediumEvent
+            if (!PlayerPrefs.HasKey("mediumEventCost"))
+            {
+                HexConfiguration.costByEvent[HexConfiguration.EventType.Medium] = (int)mediumEventSlider.value;
+                PlayerPrefs.SetFloat("mediumEventCost", HexConfiguration.costByEvent[HexConfiguration.EventType.Medium]);
+                PlayerPrefs.Save();
+            }
+            else
+            {
+                HexConfiguration.costByEvent[HexConfiguration.EventType.Medium] = (int)PlayerPrefs.GetFloat("mediumEventCost");
+                mediumEventSlider.value = HexConfiguration.costByEvent[HexConfiguration.EventType.Medium];
+                mediumEventText.text =  $"Medium event : {HexConfiguration.costByEvent[HexConfiguration.EventType.Medium]}";
+            }
+            //expensiveEvent
+            if (!PlayerPrefs.HasKey("expensiveEventCost"))
+            {
+                HexConfiguration.costByEvent[HexConfiguration.EventType.Expensive] = (int)expensiveEventSlider.value;
+                PlayerPrefs.SetFloat("expensiveEventCost", HexConfiguration.costByEvent[HexConfiguration.EventType.Expensive]);
+                PlayerPrefs.Save();
+            }
+            else
+            {
+                HexConfiguration.costByEvent[HexConfiguration.EventType.Expensive] = (int)PlayerPrefs.GetFloat("expensiveEventCost");
+                expensiveEventSlider.value = HexConfiguration.costByEvent[HexConfiguration.EventType.Expensive];
+                expensiveEventText.text =  $"Expensive event : {HexConfiguration.costByEvent[HexConfiguration.EventType.Expensive]}";
             }
             
             
             
             
-            singleMoveCostSlider.onValueChanged.AddListener((value)=>
+            emptyMoveCostSlider.onValueChanged.AddListener((value)=>
             {
-                singleUnitPathCost = (int) value;
-                singleMoveCostText.text = $"Single move cost : {singleUnitPathCost}";
-                PlayerPrefs.SetFloat("singleMoveCost", singleMoveCostSlider.value);
+                HexConfiguration.costByType[HexConfiguration.HexType.Empty] = (int) value;
+                emptyMoveCostText.text = $"Empty move cost : {HexConfiguration.costByType[HexConfiguration.HexType.Empty]}";
+                PlayerPrefs.SetFloat("singleMoveCost", emptyMoveCostSlider.value);
                 PlayerPrefs.Save();
             });
-            maxFoodSlider.onValueChanged.AddListener((value)=>
+            
+            hillMoveCostSlider.onValueChanged.AddListener((value)=>
             {
-                maxFood = (int) value;
+                HexConfiguration.costByType[HexConfiguration.HexType.Hill] = (int) value;
+                hillMoveCostText.text = $"Hill move cost : {HexConfiguration.costByType[HexConfiguration.HexType.Hill]}";
+                PlayerPrefs.SetFloat("hillMoveCost", hillMoveCostSlider.value);
+                PlayerPrefs.Save();
+            });
+            
+            forestMoveCostSlider.onValueChanged.AddListener((value)=>
+            {
+                HexConfiguration.costByType[HexConfiguration.HexType.Forest] = (int) value;
+                forestMoveCostText.text = $"Forest move cost : {HexConfiguration.costByType[HexConfiguration.HexType.Forest]}";
+                PlayerPrefs.SetFloat("forestMoveCost", forestMoveCostSlider.value);
+                PlayerPrefs.Save();
+            });
+            
+            swampMoveCostSlider.onValueChanged.AddListener((value)=>
+            {
+                HexConfiguration.costByType[HexConfiguration.HexType.Swamp] = (int) value;
+                swampMoveCostText.text = $"Swamp move cost : {HexConfiguration.costByType[HexConfiguration.HexType.Swamp]}";
+                PlayerPrefs.SetFloat("swampMoveCost", swampMoveCostSlider.value);
+                PlayerPrefs.Save();
+            });
+            
+            cheapEventSlider.onValueChanged.AddListener((value)=>
+            {
+                HexConfiguration.costByEvent[HexConfiguration.EventType.Cheap] = (int) value;
+                cheapEventText.text = $"Cheap event : {HexConfiguration.costByEvent[HexConfiguration.EventType.Cheap]}";
+                PlayerPrefs.SetFloat("cheapEventCost", cheapEventSlider.value);
+                PlayerPrefs.Save();
+            });
+            
+            mediumEventSlider.onValueChanged.AddListener((value)=>
+            {
+                HexConfiguration.costByEvent[HexConfiguration.EventType.Medium] = (int) value;
+                mediumEventText.text = $"Medium event : {HexConfiguration.costByEvent[HexConfiguration.EventType.Medium]}";
+                PlayerPrefs.SetFloat("mediumEventCost", mediumEventSlider.value);
+                PlayerPrefs.Save();
+            });
+            
+            expensiveEventSlider.onValueChanged.AddListener((value)=>
+            {
+                HexConfiguration.costByEvent[HexConfiguration.EventType.Expensive] = (int) value;
+                expensiveEventText.text = $"Expensive event : {HexConfiguration.costByEvent[HexConfiguration.EventType.Expensive]}";
+                PlayerPrefs.SetFloat("expensiveEventCost", expensiveEventSlider.value);
+                PlayerPrefs.Save();
+            });
+            
+            
+            
+            
+            maxFoodField.onValueChanged.AddListener((value)=>
+            {
+                maxFood = Convert.ToInt32(value);
                 if (currentFood > maxFood)
                     currentFood = maxFood;
 
                 foodText.text = $"{currentFood}/{maxFood}";
                 foodText.color = new Color(1f - ((float) currentFood / maxFood), ((float)currentFood / maxFood), 0);
                 maxFoodText.text = $"Max food count : {maxFood}";
-                PlayerPrefs.SetFloat("maxFood", maxFoodSlider.value);
+                PlayerPrefs.SetFloat("maxFood", Convert.ToSingle(maxFoodField.text));
                 PlayerPrefs.Save();
             });
             eventCostSlider.onValueChanged.AddListener((value)=>

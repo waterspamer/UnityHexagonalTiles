@@ -108,6 +108,11 @@ MonoBehaviour:
   obstacle: {fileID: 2100000, guid: 73e47560da39a7d48b82e189938eedec, type: 2}
   currentPos: {fileID: 2100000, guid: 1badef43eae47ca4f8b9666016628d1d, type: 2}
   coordinates: {x: -20, y: 12, z: 8}
+  hexType: 0
+  empty: {fileID: 0}
+  hill: {fileID: 0}
+  forest: {fileID: 0}
+  swamp: {fileID: 0}
   pathVisualizer: {fileID: 0}
   outlineRound: {fileID: 3333678489659729552}
   g: 44
@@ -122,6 +127,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   eventHappened: 0
+  eventCost: 0
 --- !u!64 &3333678489555629312
 MeshCollider:
   m_ObjectHideFlags: 0

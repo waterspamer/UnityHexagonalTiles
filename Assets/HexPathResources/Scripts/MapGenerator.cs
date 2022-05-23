@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using HexPathResources.Scripts.DataStructs;
 using UnityEngine;
@@ -22,6 +23,11 @@ namespace HexPathResources.Scripts
         public float zOffset;
 
         public List<HexUnit> units;
+
+        private void Awake()
+        {
+            
+        }
 
 
         public void GenerateMap()

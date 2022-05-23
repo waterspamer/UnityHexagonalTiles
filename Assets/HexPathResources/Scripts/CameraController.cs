@@ -8,7 +8,7 @@ namespace HexPathResources.Scripts
     
     public class CameraController : MonoBehaviour
     {
-        public float cameraSpeed = 4f;
+        public float cameraSpeed = 8f;
         public Transform cameraPivot;
         public Transform playerTransform;
         public PathVisualizer pathVisualizer;
@@ -22,7 +22,7 @@ namespace HexPathResources.Scripts
 
         private void Awake()
         {
-
+            
             toggleOff.onValueChanged.AddListener(( value)=>
             {
                 if (value)
@@ -45,7 +45,7 @@ namespace HexPathResources.Scripts
             
             offset = cameraPivot.position - playerTransform.position;
             //Debug.Log(offset);
-            SetControllingType(2);
+            SetControllingType(1);
         }
         
         

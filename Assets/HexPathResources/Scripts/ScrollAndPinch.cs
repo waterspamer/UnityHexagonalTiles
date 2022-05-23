@@ -78,8 +78,10 @@ namespace HexPathResources.Scripts
                        Vector3.Distance(pos1b, pos2b);
 
             //edge case
-            if (zoom == 0 || zoom > 10)
+            if (zoom == 0 || zoom > 5)
                 return;
+
+            if ((Camera.transform.position.y > 35 && zoom < 1)  || (Camera.transform.position.y < 10 && zoom > 1)) return;
 
             //Move cam amount the mid ray
             Camera.transform.position = Vector3.LerpUnclamped(pos1, Camera.transform.position, 1 / zoom);

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7345593241025639498}
   - component: {fileID: 3657182826815715031}
   - component: {fileID: 7259835374356779193}
+  - component: {fileID: 4050783910781220878}
   m_Layer: 2
   m_Name: Cylinder
   m_TagString: Untagged
@@ -96,6 +97,19 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &4050783910781220878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4401794045664992101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a128173e0d7efb439db25b0533599da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  owner: {fileID: 993831629468140202}
 --- !u!1 &8261590657388759008
 GameObject:
   m_ObjectHideFlags: 0
@@ -124,7 +138,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8261590657388759008}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.381, z: 0}
   m_LocalScale: {x: 1, y: 0.1, z: 1}
   m_Children:
@@ -139,7 +153,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8261590657388759008}
-  m_Mesh: {fileID: 2534964839176971238, guid: 0910dee16a8af9b4d94c38f4ae572317, type: 3}
+  m_Mesh: {fileID: 2534964839176971238, guid: ec445f2957f86a44a8214a355fe391f1, type: 3}
 --- !u!23 &7613313860253541941
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -203,7 +217,13 @@ MonoBehaviour:
   space: {fileID: 2100000, guid: 433584862496a744aa335d72b75d9f9b, type: 2}
   obstacle: {fileID: 2100000, guid: 73e47560da39a7d48b82e189938eedec, type: 2}
   currentPos: {fileID: 2100000, guid: 1badef43eae47ca4f8b9666016628d1d, type: 2}
-  coordinates: {x: 0, y: 0, z: 0}
+  coordinates: {x: 0, y: 3, z: -3}
+  hexType: 0
+  eventType: 0
+  empty: {fileID: 2100000, guid: 7166c66360fe3954a94d12e3b8772cae, type: 2}
+  hill: {fileID: 2100000, guid: f290413cf77e7b045901f5e2ae543923, type: 2}
+  forest: {fileID: 2100000, guid: c2d2af1573bf554418194532c9279f75, type: 2}
+  swamp: {fileID: 2100000, guid: c049b89c980ad2943a65d480772adbd1, type: 2}
   pathVisualizer: {fileID: 0}
   outlineRound: {fileID: 4401794045664992101}
   g: 0
@@ -211,8 +231,15 @@ MonoBehaviour:
   onWalkEvent:
     m_PersistentCalls:
       m_Calls: []
-  neighbours: []
+  neighbours:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   eventHappened: 0
+  eventCost: 0
 --- !u!64 &3336182433083611266
 MeshCollider:
   m_ObjectHideFlags: 0
